@@ -4,40 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kinorama.dev</title>
-    <!-- Link to Monaco font -->
     <style>
         body {
             font-family: 'Monaco', monospace;
             margin: 0;
             padding: 0;
-            background-color: #1b1b1b;
+            background-color: #161616;
             color: #fff;
-            text-align: left; /* Align text to the left */
+            text-align: left;
         }
         header {
             background-color: #1b1b1b;
             color: #cdcdcd;
             text-align: center;
-            padding: 5px 0;
+            padding: 5px 20px;
             border-bottom: 1px solid #858585;
-            position: fixed; /* Fixed position to keep the header always visible */
-            width: 100%; /* Occupy the full width of the viewport */
-            top: 0; /* Stick to the top of the viewport */
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            margin: 0;
+            font-size: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 {
+            margin-right: auto;
+            margin-left: 50px;
+        }
+        .discord-button {
+            background-color: #fff;
+            color: #161616;
+            padding: 12px 25px;
+            text-decoration: none;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            top: 40px;
+            z-index: 1001;
+        }
+        .discord-button:hover {
+            background-color: #e5e5e5;
+        }
+        main {
+            margin-top: 80px;
         }
         footer {
             background-color: #333;
             color: #fff;
             text-align: center;
-            padding: 10px;
+            padding: 40px;
+            position: relative;
         }
         section {
             padding: 20px;
-            margin: 60px auto 10px; /* Added top margin to create space below the fixed header */
+            margin: 10px auto;
             max-width: 800px;
         }
         footer a {
             color: #fff;
             text-decoration: none;
+        }
+        footer::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #333;
         }
     </style>
 </head>
@@ -47,72 +86,44 @@
         <h1>kinorama.dev</h1>
     </header>
 
-    <section id="section1">
-        <h2>Section 1</h2>
-        <p>
-            Section 1 is dedicated to exploring the vast realm of technological advancements in the digital era.
-            In this rapidly evolving landscape, innovations continue to shape our daily lives. From artificial
-            intelligence to virtual reality, the possibilities seem boundless. As we delve into the intricacies of
-            these technologies, we uncover a world where machines learn, adapt, and enhance our experiences.
-            Artificial intelligence, often referred to as AI, stands at the forefront of this revolution. It encompasses
-            machine learning algorithms that enable computers to analyze data, recognize patterns, and make decisions
-            with minimal human intervention. The implications are profound, influencing fields ranging from healthcare
-            to finance. AI-driven innovations promise to redefine how we approach problem-solving and decision-making.
-            Simultaneously, virtual reality (VR) introduces a paradigm shift in our perception of reality. Through
-            immersive environments, VR transports individuals to alternate realms, fostering experiences that blur
-            the lines between the physical and digital worlds. As the technology matures, industries such as education,
-            gaming, and healthcare embrace VR to create engaging and transformative interactions.
-            Navigating through Section 1, we encounter the dynamic landscape of technology, where the fusion of AI and
-            VR opens new possibilities. The journey into the digital frontier is marked by continuous exploration,
-            pushing the boundaries of what was once deemed impossible.
-        </p>
-    </section>
+    <main>
+        <section id="section1">
+            <h2>Technology Wonderland</h2>
+            <p>
+                Welcome to the enchanting realm of technology where quantum butterflies flutter around, coding rainbows
+                paint the skies, and robotic unicorns roam the digital meadows. In this whimsical universe, algorithms
+                sing lullabies to binary stars, and virtual reality bunnies hop through cyberspace. It's a place where
+                pixels have personalities, and software sprites tell tales of binary adventures. So, fasten your seatbelt,
+                and let's embark on a journey through the pixelated wonders of the technological wonderland.
+            </p>
+        </section>
 
-    <section id="section2">
-        <h2>Section 2</h2>
-        <p>
-            Section 2 delves into the rich tapestry of cultural diversity and its profound impact on society. From
-            ancient traditions to modern expressions, culture shapes our identities and influences the way we perceive
-            the world. As we explore the vibrant mosaic of human cultures, we celebrate the unique heritage that defines us.
-            Cultural diversity encompasses a spectrum of customs, languages, and artistic expressions. In this globalized
-            era, the interconnectedness of cultures brings forth a rich exchange of ideas and traditions. Whether through
-            traditional ceremonies or contemporary art forms, communities weave together the threads of their heritage,
-            contributing to the global tapestry of human experience. Language, as a cornerstone of culture, serves as a
-            vehicle for communication and cultural preservation. The linguistic diversity found in Section 2 reflects the
-            beauty of expression, with each dialect carrying the nuances and histories of its speakers. The celebration of
-            language extends beyond communication; it becomes a key to unlocking the narratives embedded in cultural
-            artifacts, literature, and oral traditions.
-            In Section 2, the exploration of cultural diversity is an ode to the richness that emanates from the collective
-            human experience. Through understanding and appreciation, we bridge gaps, fostering a global community that
-            thrives on the shared beauty of our differences.
-        </p>
-    </section>
+        <section id="section2">
+            <h2>Cultural Kaleidoscope</h2>
+            <p>
+                Immerse yourself in the vibrant tapestry of cultural diversity, where language butterflies whisper
+                poetic verses, and traditions dance in rhythmic harmony. Explore the mosaic of human cultures, where
+                ancient rituals waltz with modern expressions. Each culture is a unique brushstroke on the canvas of
+                humanity, painting a masterpiece of shared experiences. Join the global carnival of traditions and
+                celebrate the kaleidoscope that is the rich, cultural tapestry of our world.
+            </p>
+        </section>
 
-    <section id="section3">
-        <h2>Section 3</h2>
-        <p>
-            Section 3 immerses us in the realm of environmental sustainability, a critical discourse in our era of
-            ecological challenges. As the world grapples with climate change and resource depletion, the imperative to
-            cultivate sustainable practices becomes paramount. This section delves into the interconnected web of
-            environmental issues and the collective responsibility to safeguard the planet for future generations.
-            The intricate balance of ecosystems is explored, emphasizing the delicate relationships that sustain life on
-            Earth. From the vast oceans to the dense rainforests, biodiversity emerges as a cornerstone of resilience.
-            The conservation of species and habitats becomes an ethical obligation, as humanity strives to preserve the
-            planet's natural heritage. Renewable energy, as a focal point in Section 3, emerges as a beacon of hope in the
-            transition to a sustainable future. Harnessing the power of sun, wind, and water, societies endeavor to reduce
-            their carbon footprint and mitigate the impacts of climate change. The urgency to adopt clean energy solutions
-            underscores the collaborative effort required to address environmental challenges on a global scale.
-            In Section 3, the narrative of environmental sustainability unfolds as a call to action. It beckons individuals,
-            communities, and nations to embrace sustainable practices, fostering a harmonious coexistence with the planet
-            we call home. Through collective stewardship, we embark on a journey toward a more sustainable and resilient future.
-        </p>
-    </section>
+        <section id="section3">
+            <h2>Sustainable Utopia</h2>
+            <p>
+                Step into the utopian world of environmental sustainability, where wind turbines hum melodies of clean
+                energy, and eco-friendly forests grow from the seeds of consciousness. Breathe in the crisp air of
+                renewable possibilities, and feel the heartbeat of the Earth in every recycled pulse. In this green
+                paradise, we weave a narrative of responsible stewardship, ensuring that future generations inherit a
+                flourishing and sustainable utopia.
+            </p>
+        </section>
+    </main>
 
     <footer>
-        <p>&copy; 2023 Kinorama. All rights reserved. | Contact: <a href="mailto:me@kinorama.dev">me@kinorama.dev</a></p>
-        <div>
-            <iframe src="https://discord.com/widget?id=EKZGAbKjRd&theme=dark" width="300" height="300" allowtransparency="true" frameborder="0"></iframe>
-        </div>
+        <p>&copy; 2023 Kinorama. All rights reserved.</p>
+        <a class="discord-button" href="https://discord.gg/yz8q8DSmxK" target="_blank">Discord</a>
     </footer>
 
 </body>
