@@ -3,38 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Website</title>
+    <title>kinorama.dev</title>
     <!-- Link to Monaco font -->
     <style>
         body {
-            font-family: 'Monaco', monospace; /* Use Monaco font for all text */
+            font-family: 'Monaco', monospace;
             margin: 0;
             padding: 0;
-            background-color: #000; /* Set background color to black */
+            background-color: #1b1b1b;
             color: #fff;
+            text-align: left; /* Align text to the left */
         }
         header {
-            background-color: #333;
-            color: #fff;
+            background-color: #1b1b1b;
+            color: #cdcdcd;
             text-align: center;
-            padding: 10px;
-        }
-        nav {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-        }
-        nav ul {
-            padding: 0;
-            list-style: none;
-        }
-        nav ul li {
-            display: inline;
-            margin-right: 10px;
-        }
-        section {
-            padding: 20px;
+            padding: 5px 0;
+            border-bottom: 1px solid #858585;
+            position: fixed; /* Fixed position to keep the header always visible */
+            width: 100%; /* Occupy the full width of the viewport */
+            top: 0; /* Stick to the top of the viewport */
         }
         footer {
             background-color: #333;
@@ -42,39 +30,89 @@
             text-align: center;
             padding: 10px;
         }
+        section {
+            padding: 20px;
+            margin: 60px auto 10px; /* Added top margin to create space below the fixed header */
+            max-width: 800px;
+        }
+        footer a {
+            color: #fff;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Welcome to My Simple Website</h1>
+        <h1>kinorama.dev</h1>
     </header>
-
-    <nav>
-        <ul>
-            <li><a href="#section1">Section 1</a></li>
-            <li><a href="#section2">Section 2</a></li>
-            <li><a href="#section3">Section 3</a></li>
-        </ul>
-    </nav>
 
     <section id="section1">
         <h2>Section 1</h2>
-        <p>This is the content of Section 1.</p>
+        <p>
+            Section 1 is dedicated to exploring the vast realm of technological advancements in the digital era.
+            In this rapidly evolving landscape, innovations continue to shape our daily lives. From artificial
+            intelligence to virtual reality, the possibilities seem boundless. As we delve into the intricacies of
+            these technologies, we uncover a world where machines learn, adapt, and enhance our experiences.
+            Artificial intelligence, often referred to as AI, stands at the forefront of this revolution. It encompasses
+            machine learning algorithms that enable computers to analyze data, recognize patterns, and make decisions
+            with minimal human intervention. The implications are profound, influencing fields ranging from healthcare
+            to finance. AI-driven innovations promise to redefine how we approach problem-solving and decision-making.
+            Simultaneously, virtual reality (VR) introduces a paradigm shift in our perception of reality. Through
+            immersive environments, VR transports individuals to alternate realms, fostering experiences that blur
+            the lines between the physical and digital worlds. As the technology matures, industries such as education,
+            gaming, and healthcare embrace VR to create engaging and transformative interactions.
+            Navigating through Section 1, we encounter the dynamic landscape of technology, where the fusion of AI and
+            VR opens new possibilities. The journey into the digital frontier is marked by continuous exploration,
+            pushing the boundaries of what was once deemed impossible.
+        </p>
     </section>
 
     <section id="section2">
         <h2>Section 2</h2>
-        <p>This is the content of Section 2.</p>
+        <p>
+            Section 2 delves into the rich tapestry of cultural diversity and its profound impact on society. From
+            ancient traditions to modern expressions, culture shapes our identities and influences the way we perceive
+            the world. As we explore the vibrant mosaic of human cultures, we celebrate the unique heritage that defines us.
+            Cultural diversity encompasses a spectrum of customs, languages, and artistic expressions. In this globalized
+            era, the interconnectedness of cultures brings forth a rich exchange of ideas and traditions. Whether through
+            traditional ceremonies or contemporary art forms, communities weave together the threads of their heritage,
+            contributing to the global tapestry of human experience. Language, as a cornerstone of culture, serves as a
+            vehicle for communication and cultural preservation. The linguistic diversity found in Section 2 reflects the
+            beauty of expression, with each dialect carrying the nuances and histories of its speakers. The celebration of
+            language extends beyond communication; it becomes a key to unlocking the narratives embedded in cultural
+            artifacts, literature, and oral traditions.
+            In Section 2, the exploration of cultural diversity is an ode to the richness that emanates from the collective
+            human experience. Through understanding and appreciation, we bridge gaps, fostering a global community that
+            thrives on the shared beauty of our differences.
+        </p>
     </section>
 
     <section id="section3">
         <h2>Section 3</h2>
-        <p>This is the content of Section 3.</p>
+        <p>
+            Section 3 immerses us in the realm of environmental sustainability, a critical discourse in our era of
+            ecological challenges. As the world grapples with climate change and resource depletion, the imperative to
+            cultivate sustainable practices becomes paramount. This section delves into the interconnected web of
+            environmental issues and the collective responsibility to safeguard the planet for future generations.
+            The intricate balance of ecosystems is explored, emphasizing the delicate relationships that sustain life on
+            Earth. From the vast oceans to the dense rainforests, biodiversity emerges as a cornerstone of resilience.
+            The conservation of species and habitats becomes an ethical obligation, as humanity strives to preserve the
+            planet's natural heritage. Renewable energy, as a focal point in Section 3, emerges as a beacon of hope in the
+            transition to a sustainable future. Harnessing the power of sun, wind, and water, societies endeavor to reduce
+            their carbon footprint and mitigate the impacts of climate change. The urgency to adopt clean energy solutions
+            underscores the collaborative effort required to address environmental challenges on a global scale.
+            In Section 3, the narrative of environmental sustainability unfolds as a call to action. It beckons individuals,
+            communities, and nations to embrace sustainable practices, fostering a harmonious coexistence with the planet
+            we call home. Through collective stewardship, we embark on a journey toward a more sustainable and resilient future.
+        </p>
     </section>
 
     <footer>
-        <p>&copy; 2023 Simple Website. All rights reserved.</p>
+        <p>&copy; 2023 Kinorama. All rights reserved. | Contact: <a href="mailto:me@kinorama.dev">me@kinorama.dev</a></p>
+        <div>
+            <iframe src="https://discord.com/widget?id=EKZGAbKjRd&theme=dark" width="300" height="300" allowtransparency="true" frameborder="0"></iframe>
+        </div>
     </footer>
 
 </body>
