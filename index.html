@@ -15,9 +15,9 @@
             color: #fff;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between; /* Abstand zwischen Inhalt und Ende der Seite */
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             box-sizing: border-box;
         }
         .discord-button {
@@ -30,6 +30,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
             font-size: 1.2em;
+            margin-top: 20px; /* Abstand zwischen Text und Button */
         }
         .discord-button:hover {
             background-color: #e5e5e5;
@@ -40,6 +41,7 @@
             color: #fff;
             margin-bottom: 20px;
             text-align: center;
+            margin-top: 100px; /* Abstand zwischen oberem Rand und Text */
         }
         footer {
             color: #ccc;
@@ -51,10 +53,8 @@
 </head>
 <body>
 
-    <div>
-        <p class="button-text">Klicke unten, um unserem Discord-Server beizutreten:</p>
-        <a class="discord-button" href="https://discord.gg/yz8q8DSmxK" target="_blank">Discord</a>
-    </div>
+    <p class="button-text">Klicke unten, um unserem Discord-Server beizutreten:</p>
+    <a class="discord-button" href="https://discord.gg/yz8q8DSmxK" target="_blank">Discord</a>
     
     <footer>
         <p>&copy; 2023 Kinorama. All rights reserved.</p>
