@@ -25,16 +25,37 @@
             cursor: pointer;
             transition: background-color 0.3s;
             font-size: 1.2em;
-            margin-top: 30vh; /* Positionierung in der Mitte des Bildschirms */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .discord-button:hover {
             background-color: #e5e5e5;
+        }
+        .button-text {
+            font-size: 1em;
+            font-family: 'Monaco', monospace;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        footer {
+            color: #ccc;
+            font-size: 0.8em;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
         }
     </style>
 </head>
 <body>
 
+    <p class="button-text">Klicke unten, um unserem Discord-Server beizutreten:</p>
     <a class="discord-button" href="https://discord.gg/yz8q8DSmxK" target="_blank">Discord</a>
+    
+    <footer>
+        <p>&copy; 2023 Kinorama. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>
