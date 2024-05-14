@@ -26,9 +26,9 @@
             transition: background-color 0.3s;
             font-size: 1.2em;
             position: absolute;
-            top: 50%;
+            bottom: 10vh; /* Abstand vom unteren Bildschirmrand */
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
         }
         .discord-button:hover {
             background-color: #e5e5e5;
@@ -38,15 +38,15 @@
             font-family: 'Monaco', monospace;
             color: #fff;
             position: absolute;
-            top: calc(50% - 30px); /* 50% der Höhe minus halbe Höhe des Buttons */
+            bottom: calc(10vh + 45px); /* Abstand vom unteren Bildschirmrand plus Button-Höhe und etwas Abstand */
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
         }
         footer {
             color: #ccc;
             font-size: 0.8em;
             position: absolute;
-            bottom: 10px;
+            bottom: 0;
             width: 100%;
         }
     </style>
