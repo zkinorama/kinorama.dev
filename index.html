@@ -29,7 +29,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
-        #result {
+        #result, #required-note-result {
             margin-top: 20px;
             font-size: 1.2em;
         }
@@ -48,6 +48,14 @@
     <button onclick="addNote()">Weitere Note hinzufügen</button>
     <button onclick="calculateAverage()">Durchschnitt berechnen</button>
     <div id="result"></div>
+    
+    <h2>Benötigte Note berechnen</h2>
+    <label>Gewünschter Durchschnitt:</label>
+    <input type="number" id="desired-average" step="0.01" min="1" max="6">
+    <label>Gewichtung der nächsten Note:</label>
+    <input type="number" id="next-weight" step="0.01" min="0" max="10" value="1">
+    <button onclick="calculateRequiredNote()">Benötigte Note berechnen</button>
+    <div id="required-note-result"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -115,6 +123,32 @@
 
             const average = weightedSum / totalWeight;
             document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
+        }
+
+        function calculateRequiredNote() {
+            const desiredAverage = parseFloat(document.getElementById('desired-average').value);
+            const nextWeight = parseFloat(document.getElementById('next-weight').value);
+
+            if (isNaN(desiredAverage) || isNaN(nextWeight)) {
+                document.getElementById('required-note-result').textContent = 'Bitte geben Sie gültige Werte für den gewünschten Durchschnitt und die Gewichtung der nächsten Note ein.';
+                return;
+            }
+
+            const notes = document.querySelectorAll('.note-input');
+            const weights = document.querySelectorAll('.weight-input');
+            let totalWeight = 0, weightedSum = 0;
+
+            notes.forEach((note, i) => {
+                const noteValue = parseFloat(note.value);
+                const weightValue = parseFloat(weights[i].value);
+                if (!isNaN(noteValue) && !isNaN(weightValue)) {
+                    totalWeight += weightValue;
+                    weightedSum += noteValue * weightValue;
+                }
+            });
+
+            const requiredNote = (desiredAverage * (totalWeight + nextWeight) - weightedSum) / nextWeight;
+            document.getElementById('required-note-result').textContent = `Benötigte Note: ${requiredNote.toFixed(2)}`;
         }
     </script>
 </body>
