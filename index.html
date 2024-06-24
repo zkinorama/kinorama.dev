@@ -1,64 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content=" © 2023 Kinorama. All rights reserved">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>kinorama.dev</title>
+    <title>Notenrechner</title>
     <style>
         body {
-            font-family: 'Monaco', monospace;
-            margin: 0;
-            padding: 20px; /* Abstand vom Rand der Website */
-            background-color: #161616;
-            color: #fff;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Abstand zwischen Inhalt und Ende der Seite */
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            box-sizing: border-box;
         }
-        .discord-button {
-            background-color: #fff;
-            color: #161616;
-            padding: 15px 30px;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        h1 {
+            color: #333;
+        }
+        .note {
+            margin: 5px 0;
+        }
+        .note input {
+            margin-left: 10px;
+        }
+        #result {
+            margin-top: 20px;
             font-size: 1.2em;
-            margin-top: 20px; /* Abstand zwischen Text und Button */
-        }
-        .discord-button:hover {
-            background-color: #e5e5e5;
-        }
-        .button-text {
-            font-size: 1em;
-            font-family: 'Monaco', monospace;
-            color: #fff;
-            margin-bottom: 20px;
-            text-align: center;
-            margin-top: 100px; /* Abstand zwischen oberem Rand und Text */
-        }
-        footer {
-            color: #ccc;
-            font-size: 0.8em;
-            margin-top: auto;
-            text-align: center;
         }
     </style>
 </head>
 <body>
+    <h1>Notenrechner</h1>
+    <div id="noten-container">
+        <div class="note">
+            <label>Note 1: </label>
+            <input type="number" class="note-input" step="0.01">
+            <label> Gewichtung: </label>
+            <input type="number" class="weight-input" step="0.01">
+        </div>
+    </div>
+    <button onclick="addNote()">Weitere Note hinzufügen</button>
+    <button onclick="calculateAverage()">Durchschnitt berechnen</button>
+    <div id="result"></div>
 
-    <p class="button-text">Klicke unten, um unserem Discord-Server beizutreten:</p>
-    <a class="discord-button" href="https://discord.gg/UUHk2xGWAE" target="_blank">Discord</a>
-    
-    <footer>
-        <p>&copy; 2005 Kinorama. Protected by Cloudflare.</p>
-    </footer>
+    <script>
+        function addNote() {
+            const container = document.getElementById('noten-container');
+            const noteDiv = document.createElement('div');
+            noteDiv.classList.add('note');
+            noteDiv.innerHTML = `
+                <label>Note: </label>
+                <input type="number" class="note-input" step="0.01">
+                <label> Gewichtung: </label>
+                <input type="number" class="weight-input" step="0.01">
+            `;
+            container.appendChild(noteDiv);
+        }
 
+        function calculateAverage() {
+            const noteInputs = document.querySelectorAll('.note-input');
+            const weightInputs = document.querySelectorAll('.weight-input');
+
+            let totalWeight = 0;
+            let weightedSum = 0;
+
+            for (let i = 0; i < noteInputs.length; i++) {
+                const note = parseFloat(noteInputs[i].value);
+                const weight = parseFloat(weightInputs[i].value);
+                if (!isNaN(note) && !isNaN(weight)) {
+                    totalWeight += weight;
+                    weightedSum += note * weight;
+                }
+            }
+
+            const average = weightedSum / totalWeight;
+            document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
+        }
+    </script>
 </body>
 </html>
