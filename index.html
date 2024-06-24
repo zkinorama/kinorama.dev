@@ -6,122 +6,116 @@
 <title>Notenrechner</title>
 <style>
     body {
-        background-color: #121212;
-        color: #ffffff;
+        background-color: #222;
+        color: #fff;
         font-family: Monaco, monospace;
-        margin: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
+        margin: 0;
     }
     .container {
-        background-color: #1f1f1f;
+        width: 400px;
+        background-color: #333;
         padding: 20px;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 600px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
     table {
         width: 100%;
+        margin-bottom: 10px;
         border-collapse: collapse;
-        margin-bottom: 20px;
     }
-    table, th, td {
-        border: 1px solid #333333;
-    }
-    th, td {
-        padding: 10px;
+    table td, table th {
+        padding: 8px;
         text-align: center;
+        border-bottom: 1px solid #444;
     }
-    th {
-        background-color: #333333;
+    table th {
+        background-color: #555;
     }
-    input[type="text"] {
-        background-color: #1f1f1f;
-        color: #ffffff;
-        border: none;
-        text-align: center;
+    input[type="number"], button {
         width: 100%;
-    }
-    input[type="text"]:focus {
-        outline: none;
-    }
-    .btn {
-        background-color: #ffffff;
-        color: #121212;
+        padding: 8px;
+        margin-bottom: 10px;
+        background-color: #444;
         border: none;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
+        color: #fff;
+        font-family: Monaco, monospace;
         font-size: 16px;
-        margin-top: 10px;
-        border-radius: 5px;
+    }
+    input[type="number"]::placeholder {
+        color: #666;
+    }
+    button {
+        background-color: #008cba;
         cursor: pointer;
     }
-    .average {
-        font-size: 24px;
-        text-align: right;
-        margin-top: 20px;
+    button:hover {
+        background-color: #005f73;
     }
 </style>
 </head>
 <body>
 <div class="container">
-    <table id="grades">
-        <tr>
-            <th>Note</th>
-            <th>Gewichtung (%)</th>
-            <th></th>
-        </tr>
-        <tr>
-            <td><input type="text" value="0.00" onfocus="if(this.value=='0.00')this.value=''" onblur="if(this.value=='')this.value='0.00'"></td>
-            <td><input type="text" value="100.00" onfocus="if(this.value=='100.00')this.value=''" onblur="if(this.value=='')this.value='100.00'"></td>
-            <td><button onclick="removeRow(this)">-</button></td>
-        </tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th>Gewichtung (%)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="number" step="0.01" placeholder="0.00"></td>
+                <td><input type="number" step="0.01" placeholder="100.00"></td>
+                <td><button onclick="removeRow(this)">-</button></td>
+            </tr>
+        </tbody>
     </table>
     <button onclick="addRow()">+</button>
-    <div class="average">
-        Durchschnitt: <span id="average">0.00</span>
-    </div>
-    <button class="btn" onclick="calculateAverage()">Durchschnitt berechnen</button>
+    <button onclick="calculateAverage()" style="float: right;">Durchschnitt berechnen</button>
+    <div style="clear: both;"></div>
+    <p style="text-align: left;">Durchschnitt: <span id="average">---</span></p>
 </div>
 
 <script>
     function addRow() {
-        var table = document.getElementById("grades");
-        var row = table.insertRow(table.rows.length - 1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        cell1.innerHTML = '<input type="text" value="0.00" onfocus="if(this.value==\'0.00\')this.value=\'\'" onblur="if(this.value==\'\')this.value=\'0.00\'">';
-        cell2.innerHTML = '<input type="text" value="100.00" onfocus="if(this.value==\'100.00\')this.value=\'\'" onblur="if(this.value==\'\')this.value=\'100.00\'">';
-        cell3.innerHTML = '<button onclick="removeRow(this)">-</button>';
+        var table = document.querySelector('table tbody');
+        var newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td><input type="number" step="0.01" placeholder="0.00"></td>
+            <td><input type="number" step="0.01" placeholder="100.00"></td>
+            <td><button onclick="removeRow(this)">-</button></td>
+        `;
     }
 
     function removeRow(button) {
         var row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+        if (row.parentNode.rows.length > 1) {
+            row.parentNode.removeChild(row);
+        }
     }
 
     function calculateAverage() {
-        var table = document.getElementById("grades");
-        var rows = table.rows;
-        var totalWeight = 0;
-        var weightedSum = 0;
-        for (var i = 1; i < rows.length - 1; i++) {
-            var cells = rows[i].cells;
-            var grade = parseFloat(cells[0].querySelector('input').value);
-            var weight = parseFloat(cells[1].querySelector('input').value);
-            if (!isNaN(grade) && !isNaN(weight)) {
-                weightedSum += grade * (weight / 100);
-                totalWeight += weight;
+        var rows = document.querySelectorAll('table tbody tr');
+        var sum = 0;
+        var weightSum = 0;
+
+        rows.forEach(function(row) {
+            var note = parseFloat(row.cells[0].querySelector('input').value);
+            var weight = parseFloat(row.cells[1].querySelector('input').value);
+
+            if (!isNaN(note) && !isNaN(weight)) {
+                sum += (note * weight);
+                weightSum += weight;
             }
-        }
-        var average = (totalWeight > 0) ? (weightedSum / totalWeight).toFixed(2) : '0.00';
-        document.getElementById("average").textContent = average;
+        });
+
+        var average = (sum / weightSum).toFixed(2);
+        document.getElementById('average').textContent = isNaN(average) ? '---' : average;
     }
 </script>
 
