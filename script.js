@@ -1,41 +1,75 @@
-function addRow() {
-    var table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
-    var newRow = table.insertRow();
-    var cell1 = newRow.insertCell(0);
-    var cell2 = newRow.insertCell(1);
-    var cell3 = newRow.insertCell(2);
-    cell1.innerHTML = '<input type="number" min="1" max="6" step="0.1" class="input-field" placeholder="Note">';
-    cell2.innerHTML = '<input type="number" min="1" max="100" class="input-field" placeholder="Gewichtung">';
-    cell3.innerHTML = '<button class="add-row" onclick="removeRow(this)">-</button>';
+body {
+    background-color: #222;
+    color: #ddd;
+    font-family: Monaco, monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-function removeRow(button) {
-    var row = button.parentNode.parentNode;
-    row.parentNode.removeChild(row);
+.container {
+    text-align: center;
 }
 
-function calculateAverage() {
-    var table = document.getElementById("grades-table");
-    var rows = table.rows;
-    var totalPoints = 0;
-    var totalWeight = 0;
+h1 {
+    font-size: 2em;
+}
 
-    for (var i = 1; i < rows.length; i++) {
-        var cells = rows[i].cells;
-        var grade = parseFloat(cells[0].getElementsByTagName('input')[0].value);
-        var weight = parseInt(cells[1].getElementsByTagName('input')[0].value);
+.calculator-box {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+}
 
-        if (!isNaN(grade) && !isNaN(weight)) {
-            totalPoints += grade * (weight / 100);
-            totalWeight += weight;
-        }
-    }
+table {
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-    var average = (totalPoints / totalWeight * 6).toFixed(2); // Skalierung auf 6-Punkte-System
+th, td {
+    padding: 10px;
+}
 
-    if (!isNaN(average)) {
-        document.getElementById("average").textContent = average;
-    } else {
-        document.getElementById("average").textContent = "-";
-    }
+th {
+    text-align: left;
+}
+
+.input-field {
+    background-color: #333;
+    color: #333; /* Textfarbe ist gleich wie Hintergrund, daher nicht sichtbar */
+    border: none;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.add-row, .calculate-btn {
+    background-color: #555;
+    color: #ddd;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.add-row:hover, .calculate-btn:hover {
+    background-color: #777;
+}
+
+.average {
+    margin-top: 10px;
+    font-size: 1.2em;
+}
+
+.average span {
+    font-weight: bold;
+}
+
+.calculate-btn {
+    margin-top: 20px;
 }
