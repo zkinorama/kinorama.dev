@@ -50,7 +50,9 @@
     <div id="result"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', updateEnterKeyBehavior);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateEnterKeyBehavior();
+        });
 
         function updateEnterKeyBehavior() {
             document.querySelectorAll('input').forEach(input => {
@@ -62,7 +64,8 @@
                             nextInput.focus();
                         } else {
                             addNote();
-                            getNextInput(input).focus();
+                            nextInput = getNextInput(input);
+                            nextInput && nextInput.focus();
                         }
                     }
                 });
@@ -73,6 +76,12 @@
             let nextInput = currentInput.nextElementSibling;
             while (nextInput && nextInput.tagName !== 'INPUT') {
                 nextInput = nextInput.nextElementSibling;
+            }
+            if (!nextInput) {
+                let nextNote = currentInput.closest('.note').nextElementSibling;
+                if (nextNote) {
+                    nextInput = nextNote.querySelector('input');
+                }
             }
             return nextInput;
         }
