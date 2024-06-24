@@ -50,29 +50,32 @@
     <div id="result"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', updateEnterKeyBehavior);
+
+        function updateEnterKeyBehavior() {
             document.querySelectorAll('input').forEach(input => {
                 input.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        let nextInput = input.nextElementSibling;
-                        while (nextInput && nextInput.tagName !== 'INPUT') {
-                            nextInput = nextInput.nextElementSibling;
-                        }
+                        let nextInput = getNextInput(input);
                         if (nextInput) {
                             nextInput.focus();
                         } else {
-                            let nextNote = input.closest('.note').nextElementSibling;
-                            if (nextNote) {
-                                nextNote.querySelector('input').focus();
-                            } else {
-                                document.querySelector('button[onclick="addNote()"]').focus();
-                            }
+                            addNote();
+                            getNextInput(input).focus();
                         }
                     }
                 });
             });
-        });
+        }
+
+        function getNextInput(currentInput) {
+            let nextInput = currentInput.nextElementSibling;
+            while (nextInput && nextInput.tagName !== 'INPUT') {
+                nextInput = nextInput.nextElementSibling;
+            }
+            return nextInput;
+        }
 
         function addNote() {
             const noteDiv = document.createElement('div');
@@ -85,30 +88,6 @@
             `;
             document.getElementById('noten-container').appendChild(noteDiv);
             updateEnterKeyBehavior();
-        }
-
-        function updateEnterKeyBehavior() {
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        let nextInput = input.nextElementSibling;
-                        while (nextInput && nextInput.tagName !== 'INPUT') {
-                            nextInput = nextInput.nextElementSibling;
-                        }
-                        if (nextInput) {
-                            nextInput.focus();
-                        } else {
-                            let nextNote = input.closest('.note').nextElementSibling;
-                            if (nextNote) {
-                                nextNote.querySelector('input').focus();
-                            } else {
-                                document.querySelector('button[onclick="addNote()"]').focus();
-                            }
-                        }
-                    }
-                });
-            });
         }
 
         function calculateAverage() {
