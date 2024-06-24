@@ -6,91 +6,63 @@
     <title>Notenrechner</title>
     <style>
         body {
-            font-family: Monaco, monospace;
             background-color: #1f1f1f;
             color: #ffffff;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: Monaco, monospace;
+            text-align: center;
+            margin-top: 50px;
         }
         .container {
-            background-color: #333;
+            margin: auto;
+            max-width: 600px;
+            border: 1px solid #ffffff;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            width: 400px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            background-color: #333333;
         }
         table {
             width: 100%;
-            margin-bottom: 10px;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         table th, table td {
-            border-bottom: 1px solid #555;
+            border: 1px solid #ffffff;
             padding: 8px;
-            text-align: center;
         }
         table th {
-            position: relative;
+            background-color: #555555;
         }
-        .add-remove-btn {
-            background-color: transparent;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 18px;
-            outline: none;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            right: 8px;
+        table td {
+            background-color: #444444;
         }
-        .add-remove-btn:hover {
-            color: #00bfa5;
-        }
-        #calculate-btn {
-            background-color: #00bfa5;
-            border: none;
-            color: #fff;
-            cursor: pointer;
+        button {
             padding: 10px 20px;
-            border-radius: 5px;
-            float: right;
-            margin-top: 10px;
-        }
-        #calculate-btn:hover {
-            background-color: #00e6cb;
-        }
-        #desired-average-btn {
-            background-color: #2979ff;
+            background-color: #555555;
+            color: #ffffff;
             border: none;
-            color: #fff;
             cursor: pointer;
-            padding: 10px 20px;
+            margin-top: 10px;
             border-radius: 5px;
-            float: right;
-            margin-top: 10px;
-            margin-right: 10px;
         }
-        #desired-average-btn:hover {
-            background-color: #448aff;
-        }
-        #result {
-            margin-top: 10px;
-            font-size: 16px;
+        button:hover {
+            background-color: #777777;
         }
         input[type="number"] {
-            padding: 8px;
             width: 60px;
+            padding: 5px;
             text-align: center;
+            border: 1px solid #777777;
+            border-radius: 5px;
+            background-color: #444444;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <table id="grades-table">
+        <h2>Notenrechner</h2>
+        <table id="noten-tabelle">
             <thead>
                 <tr>
                     <th>Note</th>
@@ -100,88 +72,105 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="number" min="1" max="6" step="0.1" value="5"></td>
-                    <td><input type="number" min="1" max="100" value="50"></td>
-                    <td><button class="add-remove-btn" onclick="addRow()">+</button></td>
+                    <td><input type="number" min="1" max="6"></td>
+                    <td><input type="number" min="1" max="100"></td>
+                    <td><button onclick="removeRow(this)">-</button></td>
                 </tr>
+                <tr>
+                    <td><input type="number" min="1" max="6"></td>
+                    <td><input type="number" min="1" max="100"></td>
+                    <td><button onclick="removeRow(this)">-</button></td>
+                </tr>
+                <!-- Hier können weitere Zeilen dynamisch hinzugefügt werden -->
             </tbody>
         </table>
-        <button id="calculate-btn" onclick="calculateAverage()">Durchschnitt berechnen</button>
-        <div id="average"></div>
-        <button id="desired-average-btn" onclick="calculateDesiredGrade()">Gewünschten Durchschnitt berechnen</button>
+        <button onclick="addRow()">+</button>
         <div>
-            <input type="number" id="desired-average" min="1" max="6" step="0.1" placeholder="Gewünschter Durchschnitt">
-            <input type="number" id="next-test-weight" min="1" max="100" placeholder="Gewichtung des nächsten Tests (%)">
+            <label for="durchschnitt">Durchschnitt:</label>
+            <span id="durchschnitt"></span>
         </div>
-        <div id="result"></div>
+        <button onclick="berechneDurchschnitt()">Durchschnitt berechnen</button>
+        <div style="margin-top: 20px;">
+            <h3>Gewünschten Durchschnitt berechnen</h3>
+            <label for="gewuenschter-durchschnitt">Gewünschter Durchschnitt:</label>
+            <input type="number" id="gewuenschter-durchschnitt" min="1" max="6">
+            <label for="gewichtung-test">Gewichtung des nächsten Tests (%):</label>
+            <input type="number" id="gewichtung-test" min="1" max="100">
+            <button onclick="berechneNaechsteNote()">Berechnen</button>
+            <div id="ergebnis"></div>
+        </div>
     </div>
 
     <script>
+        // Funktion zum Hinzufügen einer neuen Zeile zur Tabelle
         function addRow() {
-            const table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
-            const newRow = table.insertRow(-1);
-            const cells = ["Note", "Gewichtung (%)", ""];
-            for (let i = 0; i < cells.length; i++) {
-                const cell = newRow.insertCell(i);
-                if (i < 2) {
-                    const input = document.createElement("input");
-                    input.type = "number";
-                    input.min = (i === 0) ? "1" : "1";
-                    input.max = (i === 0) ? "6" : "100";
-                    input.value = (i === 0) ? "5" : "50";
-                    input.style.textAlign = "center";
-                    cell.appendChild(input);
-                } else {
-                    const button = document.createElement("button");
-                    button.className = "add-remove-btn";
-                    button.textContent = "-";
-                    button.onclick = function() {
-                        if (table.rows.length > 2) {
-                            table.deleteRow(newRow.rowIndex);
-                        }
-                    };
-                    cell.appendChild(button);
+            var table = document.getElementById("noten-tabelle").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow();
+            var cells = newRow.insertCell();
+            cells.innerHTML = '<td><input type="number" min="1" max="6"></td>';
+            cells.innerHTML += '<td><input type="number" min="1" max="100"></td>';
+            cells.innerHTML += '<td><button onclick="removeRow(this)">-</button></td>';
+        }
+
+        // Funktion zum Entfernen einer Zeile aus der Tabelle
+        function removeRow(button) {
+            var row = button.parentNode.parentNode;
+            if (document.getElementById("noten-tabelle").rows.length > 2) {
+                row.parentNode.removeChild(row);
+            } else {
+                alert("Mindestens eine Zeile muss übrig bleiben.");
+            }
+        }
+
+        // Funktion zum Berechnen des Durchschnitts
+        function berechneDurchschnitt() {
+            var table = document.getElementById("noten-tabelle");
+            var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+            var sum = 0;
+            var totalWeight = 0;
+
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var note = parseFloat(cells[0].getElementsByTagName("input")[0].value);
+                var weight = parseFloat(cells[1].getElementsByTagName("input")[0].value);
+
+                if (!isNaN(note) && !isNaN(weight)) {
+                    sum += (note * (weight / 100));
+                    totalWeight += (weight / 100);
                 }
             }
+
+            var durchschnitt = sum / totalWeight;
+            document.getElementById("durchschnitt").textContent = durchschnitt.toFixed(2);
         }
 
-        function calculateAverage() {
-            const table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
-            let sum = 0;
-            let weightSum = 0;
-            for (let i = 0; i < table.rows.length; i++) {
-                const grade = parseFloat(table.rows[i].cells[0].querySelector("input").value);
-                const weight = parseFloat(table.rows[i].cells[1].querySelector("input").value);
-                sum += grade * (weight / 100);
-                weightSum += weight;
-            }
-            const average = sum / (weightSum / 100);
-            document.getElementById("average").textContent = `Durchschnitt: ${average.toFixed(1)}`;
-        }
+        // Funktion zum Berechnen der nächsten Note für den gewünschten Durchschnitt
+        function berechneNaechsteNote() {
+            var gewuenschterDurchschnitt = parseFloat(document.getElementById("gewuenschter-durchschnitt").value);
+            var gewichtungTest = parseFloat(document.getElementById("gewichtung-test").value);
 
-        function calculateDesiredGrade() {
-            const desiredAverage = parseFloat(document.getElementById("desired-average").value);
-            const nextTestWeight = parseFloat(document.getElementById("next-test-weight").value);
-            const currentAverage = calculateCurrentAverage();
-            if (isNaN(desiredAverage) || isNaN(nextTestWeight) || isNaN(currentAverage)) {
-                document.getElementById("result").textContent = "Bitte füllen Sie alle Felder aus.";
+            if (isNaN(gewuenschterDurchschnitt) || isNaN(gewichtungTest)) {
+                alert("Bitte geben Sie einen gültigen gewünschten Durchschnitt und Gewichtung ein.");
                 return;
             }
-            const requiredGrade = (desiredAverage * ((currentAverage + nextTestWeight) / 100) - (currentAverage * (1 - (nextTestWeight / 100)))) / (nextTestWeight / 100);
-            document.getElementById("result").textContent = `Benötigte Note im nächsten Test: ${requiredGrade.toFixed(1)}`;
-        }
 
-        function calculateCurrentAverage() {
-            const table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
-            let sum = 0;
-            let weightSum = 0;
-            for (let i = 0; i < table.rows.length; i++) {
-                const grade = parseFloat(table.rows[i].cells[0].querySelector("input").value);
-                const weight = parseFloat(table.rows[i].cells[1].querySelector("input").value);
-                sum += grade * (weight / 100);
-                weightSum += weight;
+            var currentAverage = parseFloat(document.getElementById("durchschnitt").textContent);
+
+            if (isNaN(currentAverage)) {
+                alert("Berechnen Sie zuerst den Durchschnitt der aktuellen Noten.");
+                return;
             }
-            return sum / (weightSum / 100);
+
+            var currentWeight = 1 - (gewichtungTest / 100);
+            var requiredWeight = gewichtungTest / 100;
+
+            var nextNote = (gewuenschterDurchschnitt - (currentAverage * currentWeight)) / requiredWeight;
+
+            if (nextNote < 1 || nextNote > 6) {
+                document.getElementById("ergebnis").textContent = "Keine gültige nächste Note möglich.";
+            } else {
+                document.getElementById("ergebnis").textContent = "Benötigte nächste Note: " + nextNote.toFixed(2);
+            }
         }
     </script>
 </body>
