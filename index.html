@@ -7,78 +7,49 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: #f0f0f0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-size: 16px;
+            padding: 20px;
         }
-        h1, h2 {
-            color: #f5f5f5;
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
         }
         .note {
             display: flex;
             align-items: center;
             margin: 10px 0;
         }
+        .note label {
+            margin-right: 10px;
+        }
         .note input {
-            margin-left: 10px;
-            background-color: #424242;
-            color: #e0e0e0;
-            border: none;
+            width: 60px;
             padding: 5px;
+            border: 1px solid #ccc;
             border-radius: 3px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin: 0 5px;
+            padding: 10px 20px;
             font-size: 16px;
-        }
-        .note input:first-child {
-            margin-right: 20px;
-        }
-        .note input::-webkit-outer-spin-button,
-        .note input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .button {
-            background-color: transparent;
-            color: #b0b0b0;
+            background-color: #007bff;
+            color: #fff;
             border: none;
-            cursor: pointer;
-            font-size: 18px;
-            margin: 5px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
             border-radius: 3px;
-        }
-        .delete-btn {
-            background-color: transparent;
-            color: #b0b0b0;
-            border: none;
             cursor: pointer;
-            font-size: 18px;
-            margin-left: 10px;
         }
-        #result, #required-note-result {
+        #result {
             margin-top: 20px;
             font-size: 1.2em;
-            background-color: #424242;
-            color: #e0e0e0;
-            padding: 10px;
-            border-radius: 3px;
-            width: 100%;
-            text-align: center;
-        }
-        input {
-            background-color: #424242;
-            color: #e0e0e0;
-            border: none;
-            padding: 5px;
-            border-radius: 3px;
-            font-size: 16px;
         }
     </style>
 </head>
@@ -92,56 +63,13 @@
             <input type="number" class="weight-input" step="0.01" min="0" max="10">
         </div>
     </div>
-    <button class="button" onclick="addNote()">+</button>
-    <button class="button" onclick="calculateAverage()">Durchschnitt berechnen</button>
-    <button class="button" onclick="clearAllButFirst()">Zeilen Löschen</button>
+    <div class="buttons">
+        <button onclick="addNote()">Note hinzufügen</button>
+        <button onclick="calculateAverage()">Durchschnitt berechnen</button>
+    </div>
     <div id="result"></div>
-    
-    <h2>Gewünschter Durchschnitt berechnen</h2>
-    <label>Gewünschter Durchschnitt:</label>
-    <input type="number" id="desired-average" step="0.01" min="1" max="6">
-    <label> Gewichtung der nächsten Note:</label>
-    <input type="number" id="next-weight" step="0.01" min="0" max="10">
-    <button class="button" onclick="calculateRequiredNote()">Benötigte Note berechnen</button>
-    <div id="required-note-result"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            updateEnterKeyBehavior();
-        });
-
-        function updateEnterKeyBehavior() {
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        let nextInput = getNextInput(input);
-                        if (nextInput) {
-                            nextInput.focus();
-                        } else {
-                            addNote();
-                            nextInput = getNextInput(input);
-                            nextInput && nextInput.focus();
-                        }
-                    }
-                });
-            });
-        }
-
-        function getNextInput(currentInput) {
-            let nextInput = currentInput.nextElementSibling;
-            while (nextInput && nextInput.tagName !== 'INPUT') {
-                nextInput = nextInput.nextElementSibling;
-            }
-            if (!nextInput) {
-                let nextNote = currentInput.closest('.note').nextElementSibling;
-                if (nextNote) {
-                    nextInput = nextNote.querySelector('input');
-                }
-            }
-            return nextInput;
-        }
-
         function addNote() {
             const noteDiv = document.createElement('div');
             noteDiv.classList.add('note');
@@ -150,24 +78,8 @@
                 <input type="number" class="note-input" step="0.01" min="1" max="6">
                 <label> Gewichtung:</label>
                 <input type="number" class="weight-input" step="0.01" min="0" max="10">
-                <button class="delete-btn" onclick="deleteNote(this)">-</button>
             `;
             document.getElementById('noten-container').appendChild(noteDiv);
-            updateEnterKeyBehavior();
-        }
-
-        function deleteNote(button) {
-            const noteContainer = document.getElementById('noten-container');
-            if (noteContainer.children.length > 1) {
-                button.parentElement.remove();
-            }
-        }
-
-        function clearAllButFirst() {
-            const container = document.getElementById('noten-container');
-            while (container.children.length > 1) {
-                container.removeChild(container.lastChild);
-            }
         }
 
         function calculateAverage() {
@@ -184,34 +96,12 @@
                 }
             });
 
-            const average = weightedSum / totalWeight;
-            document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
-        }
-
-        function calculateRequiredNote() {
-            const desiredAverage = parseFloat(document.getElementById('desired-average').value);
-            const nextWeight = parseFloat(document.getElementById('next-weight').value);
-
-            if (isNaN(desiredAverage) || isNaN(nextWeight)) {
-                document.getElementById('required-note-result').textContent = 'Bitte geben Sie gültige Werte für den gewünschten Durchschnitt und die Gewichtung der nächsten Note ein.';
-                return;
+            if (totalWeight === 0) {
+                document.getElementById('result').textContent = "Bitte geben Sie Noten und Gewichtungen ein.";
+            } else {
+                const average = weightedSum / totalWeight;
+                document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
             }
-
-            const notes = document.querySelectorAll('.note-input');
-            const weights = document.querySelectorAll('.weight-input');
-            let totalWeight = 0, weightedSum = 0;
-
-            notes.forEach((note, i) => {
-                const noteValue = parseFloat(note.value);
-                const weightValue = parseFloat(weights[i].value);
-                if (!isNaN(noteValue) && !isNaN(weightValue)) {
-                    totalWeight += weightValue;
-                    weightedSum += noteValue * weightValue;
-                }
-            });
-
-            const requiredNote = (desiredAverage * (totalWeight + nextWeight) - weightedSum) / nextWeight;
-            document.getElementById('required-note-result').textContent = `Benötigte Note: ${requiredNote.toFixed(2)}`;
         }
     </script>
 </body>
