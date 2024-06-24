@@ -68,9 +68,6 @@
     </div>
     <button class="button" onclick="addNote()">Weitere Note hinzufügen</button>
     <button class="button" onclick="calculateAverage()">Durchschnitt berechnen</button>
-    <button class="button" onclick="clearAllFields()">Alle Felder löschen</button>
-    <button class="button" onclick="clearAllButFirst()">Alle Zeilen außer der obersten löschen</button>
-    <div id="result"></div>
     
     <h2>Gewünschter Durchschnitt berechnen</h2>
     <label>Gewünschter Durchschnitt:</label>
@@ -133,21 +130,6 @@
 
         function deleteNote(button) {
             button.parentElement.remove();
-        }
-
-        function clearAllFields() {
-            document.querySelectorAll('.note-input, .weight-input').forEach(input => input.value = '');
-            document.getElementById('desired-average').value = '';
-            document.getElementById('next-weight').value = '1';
-            document.getElementById('result').textContent = '';
-            document.getElementById('required-note-result').textContent = '';
-        }
-
-        function clearAllButFirst() {
-            const container = document.getElementById('noten-container');
-            while (container.children.length > 1) {
-                container.removeChild(container.lastChild);
-            }
         }
 
         function calculateAverage() {
