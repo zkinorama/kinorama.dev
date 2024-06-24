@@ -6,60 +6,63 @@
 <title>Notenrechner</title>
 <style>
     body {
-        background-color: #222;
+        background-color: #111;
         color: #fff;
         font-family: Monaco, monospace;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
         margin: 0;
+        padding: 20px;
     }
     .container {
-        width: 400px;
-        background-color: #333;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        max-width: 600px;
+        margin: 0 auto;
     }
     table {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         border-collapse: collapse;
     }
-    table td, table th {
-        padding: 8px;
+    table, th, td {
+        border: 1px solid #333;
+    }
+    th, td {
+        padding: 10px;
         text-align: center;
-        border-bottom: 1px solid #444;
     }
-    table th {
-        background-color: #555;
-    }
-    input[type="number"], button {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        background-color: #444;
-        border: none;
+    input[type="text"] {
+        background-color: #111;
         color: #fff;
+        border: none;
+        width: 100%;
+        box-sizing: border-box;
         font-family: Monaco, monospace;
-        font-size: 16px;
+        text-align: center;
     }
-    input[type="number"]::placeholder {
-        color: #666;
-    }
-    button {
-        background-color: #008cba;
+    input[type="button"] {
+        background-color: #fff;
+        color: #111;
+        border: none;
+        padding: 10px 20px;
         cursor: pointer;
+        font-family: Monaco, monospace;
     }
-    button:hover {
-        background-color: #005f73;
+    input[type="button"]:hover {
+        background-color: #eee;
+    }
+    #average {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+    }
+    #calculate-btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
     }
 </style>
 </head>
 <body>
 <div class="container">
-    <table>
+    <table id="grades-table">
         <thead>
             <tr>
                 <th>Note</th>
@@ -69,54 +72,103 @@
         </thead>
         <tbody>
             <tr>
-                <td><input type="number" step="0.01" placeholder="0.00"></td>
-                <td><input type="number" step="0.01" placeholder="100.00"></td>
-                <td><button onclick="removeRow(this)">-</button></td>
+                <td><input type="text" class="grade-input" value="0.00"></td>
+                <td><input type="text" class="weight-input" value="100.00"></td>
+                <td><input type="button" value="+" onclick="addRow(this)"></td>
             </tr>
         </tbody>
     </table>
-    <button onclick="addRow()">+</button>
-    <button onclick="calculateAverage()" style="float: right;">Durchschnitt berechnen</button>
-    <div style="clear: both;"></div>
-    <p style="text-align: left;">Durchschnitt: <span id="average">---</span></p>
+    <input type="button" id="calculate-btn" value="Durchschnitt berechnen" onclick="calculateAverage()">
+    <div id="average">Durchschnitt: <span id="average-result">0.00</span></div>
 </div>
 
 <script>
-    function addRow() {
-        var table = document.querySelector('table tbody');
-        var newRow = table.insertRow();
-        newRow.innerHTML = `
-            <td><input type="number" step="0.01" placeholder="0.00"></td>
-            <td><input type="number" step="0.01" placeholder="100.00"></td>
-            <td><button onclick="removeRow(this)">-</button></td>
-        `;
+    function addRow(button) {
+        var table = document.getElementById('grades-table').getElementsByTagName('tbody')[0];
+        var lastRow = table.rows[table.rows.length - 1];
+        var newRow = table.insertRow(table.rows.length);
+
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+
+        cell1.innerHTML = '<input type="text" class="grade-input" value="0.00">';
+        cell2.innerHTML = '<input type="text" class="weight-input" value="100.00">';
+        cell3.innerHTML = '<input type="button" value="-" onclick="deleteRow(this)">';
+
+        updateButtons();
     }
 
-    function removeRow(button) {
+    function deleteRow(button) {
         var row = button.parentNode.parentNode;
         if (row.parentNode.rows.length > 1) {
             row.parentNode.removeChild(row);
+            updateButtons();
+        }
+    }
+
+    function updateButtons() {
+        var table = document.getElementById('grades-table').getElementsByTagName('tbody')[0];
+        var rows = table.rows;
+        for (var i = 0; i < rows.length; i++) {
+            var buttons = rows[i].getElementsByTagName('input');
+            if (i === rows.length - 1) {
+                buttons[2].style.visibility = 'visible'; // Show '+' button
+            } else {
+                buttons[2].style.visibility = 'hidden'; // Hide '+' button
+            }
         }
     }
 
     function calculateAverage() {
-        var rows = document.querySelectorAll('table tbody tr');
-        var sum = 0;
+        var table = document.getElementById('grades-table').getElementsByTagName('tbody')[0];
+        var rows = table.rows;
+        var total = 0;
         var weightSum = 0;
 
-        rows.forEach(function(row) {
-            var note = parseFloat(row.cells[0].querySelector('input').value);
-            var weight = parseFloat(row.cells[1].querySelector('input').value);
+        for (var i = 0; i < rows.length; i++) {
+            var gradeInput = parseFloat(rows[i].getElementsByClassName('grade-input')[0].value);
+            var weightInput = parseFloat(rows[i].getElementsByClassName('weight-input')[0].value);
 
-            if (!isNaN(note) && !isNaN(weight)) {
-                sum += (note * weight);
-                weightSum += weight;
+            if (!isNaN(gradeInput) && !isNaN(weightInput)) {
+                total += gradeInput * (weightInput / 100);
+                weightSum += weightInput;
             }
-        });
+        }
 
-        var average = (sum / weightSum).toFixed(2);
-        document.getElementById('average').textContent = isNaN(average) ? '---' : average;
+        if (weightSum > 0) {
+            var average = total / (weightSum / 100);
+            document.getElementById('average-result').textContent = average.toFixed(2);
+        } else {
+            document.getElementById('average-result').textContent = "0.00";
+        }
     }
+
+    document.addEventListener('keypress', function(event) {
+        var activeElement = document.activeElement;
+        if (event.key === 'Enter') {
+            if (activeElement.classList.contains('grade-input') || activeElement.classList.contains('weight-input')) {
+                var table = document.getElementById('grades-table').getElementsByTagName('tbody')[0];
+                var rows = table.rows;
+                var lastRow = rows[rows.length - 1];
+                var buttons = lastRow.getElementsByTagName('input');
+
+                if (activeElement.classList.contains('grade-input')) {
+                    activeElement.blur();
+                    if (activeElement.value.trim() === '') return;
+                } else if (activeElement.classList.contains('weight-input')) {
+                    activeElement.blur();
+                    if (activeElement.value.trim() === '') return;
+                }
+
+                if (activeElement === lastRow.getElementsByClassName('grade-input')[0]) {
+                    buttons[1].focus(); // Focus on weight input
+                } else if (activeElement === lastRow.getElementsByClassName('weight-input')[0]) {
+                    addRow(buttons[2]); // Add new row
+                }
+            }
+        }
+    });
 </script>
 
 </body>
