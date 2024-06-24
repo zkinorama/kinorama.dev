@@ -33,9 +33,9 @@
     <h1>Notenrechner</h1>
     <div id="noten-container">
         <div class="note">
-            <label>Note: </label>
+            <label>Note:</label>
             <input type="number" class="note-input" step="0.01" min="1" max="6">
-            <label> Gewichtung: </label>
+            <label>Gewichtung:</label>
             <input type="number" class="weight-input" step="0.01" min="0" max="10" value="1">
         </div>
     </div>
@@ -45,33 +45,30 @@
 
     <script>
         function addNote() {
-            const container = document.getElementById('noten-container');
             const noteDiv = document.createElement('div');
             noteDiv.classList.add('note');
             noteDiv.innerHTML = `
-                <label>Note: </label>
+                <label>Note:</label>
                 <input type="number" class="note-input" step="0.01" min="1" max="6">
-                <label> Gewichtung: </label>
+                <label>Gewichtung:</label>
                 <input type="number" class="weight-input" step="0.01" min="0" max="10" value="1">
             `;
-            container.appendChild(noteDiv);
+            document.getElementById('noten-container').appendChild(noteDiv);
         }
 
         function calculateAverage() {
-            const noteInputs = document.querySelectorAll('.note-input');
-            const weightInputs = document.querySelectorAll('.weight-input');
+            const notes = document.querySelectorAll('.note-input');
+            const weights = document.querySelectorAll('.weight-input');
+            let totalWeight = 0, weightedSum = 0;
 
-            let totalWeight = 0;
-            let weightedSum = 0;
-
-            for (let i = 0; i < noteInputs.length; i++) {
-                const note = parseFloat(noteInputs[i].value);
-                const weight = parseFloat(weightInputs[i].value);
-                if (!isNaN(note) && !isNaN(weight)) {
-                    totalWeight += weight;
-                    weightedSum += note * weight;
+            notes.forEach((note, i) => {
+                const noteValue = parseFloat(note.value);
+                const weightValue = parseFloat(weights[i].value);
+                if (!isNaN(noteValue) && !isNaN(weightValue)) {
+                    totalWeight += weightValue;
+                    weightedSum += noteValue * weightValue;
                 }
-            }
+            });
 
             const average = weightedSum / totalWeight;
             document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
