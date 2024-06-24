@@ -8,8 +8,9 @@
     body {
         font-family: Monaco, monospace;
         background-color: #1f1f1f;
-        color: #ffffff;
+        color: #cccccc;
         margin: 0;
+        padding: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -18,15 +19,15 @@
     #container {
         background-color: #333333;
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        width: 80%;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         max-width: 600px;
+        width: 100%;
     }
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     table, th, td {
         border: 1px solid #555555;
@@ -38,100 +39,111 @@
     th {
         background-color: #444444;
     }
-    input[type="number"] {
-        width: 60px;
-    }
-    .btn {
-        padding: 8px 12px;
-        background-color: #007bff;
+    input {
+        width: calc(100% - 20px);
+        padding: 5px;
         border: none;
+        background-color: transparent;
+        color: inherit;
+        font-family: Monaco, monospace;
+        text-align: center;
+    }
+    .remove-btn {
+        background-color: #cc0000;
         color: white;
+        border: none;
+        padding: 6px 12px;
         cursor: pointer;
         border-radius: 4px;
     }
-    .btn-delete {
-        background-color: #dc3545;
+    .add-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 4px;
     }
-    .btn-add {
+    .calculate-btn {
         background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        float: right;
     }
     #average {
-        font-size: 1.2em;
         margin-top: 20px;
         text-align: left;
-    }
-    #calculate-btn {
-        float: right;
     }
 </style>
 </head>
 <body>
-<div id="container">
-    <table id="grades-table">
-        <thead>
-            <tr>
-                <th>Note</th>
-                <th>Gewichtung (%)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><input type="number" min="1" max="6" required></td>
-                <td><input type="number" min="1" max="100" required></td>
-                <td><button class="btn btn-add" onclick="addRow()">+</button></td>
-            </tr>
-        </tbody>
-    </table>
-    <div id="average">Durchschnitt: <span id="average-value">-</span></div>
-    <button id="calculate-btn" class="btn" onclick="calculateAverage()">Durchschnitt berechnen</button>
-</div>
+    <div id="container">
+        <table id="grades-table">
+            <thead>
+                <tr>
+                    <th>Note</th>
+                    <th>Gewichtung (%)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="grade-input" value="0.00"></td>
+                    <td><input type="text" class="weight-input" value="100.00"></td>
+                    <td><button class="remove-btn" onclick="removeRow(this)">-</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="add-btn" onclick="addRow()">+</button>
+        <button class="calculate-btn" onclick="calculateAverage()">Durchschnitt berechnen</button>
+        <div id="average">Durchschnitt: <span id="average-value">-</span></div>
+    </div>
 
-<script>
-function addRow() {
-    var table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
-    var newRow = table.insertRow(table.rows.length - 1); // Insert before the last row (which is the footer row)
-    
-    var cell1 = newRow.insertCell(0);
-    var cell2 = newRow.insertCell(1);
-    var cell3 = newRow.insertCell(2);
-    
-    cell1.innerHTML = '<input type="number" min="1" max="6" required>';
-    cell2.innerHTML = '<input type="number" min="1" max="100" required>';
-    cell3.innerHTML = '<button class="btn btn-delete" onclick="deleteRow(this)">-</button>';
-}
-
-function deleteRow(btn) {
-    var row = btn.parentNode.parentNode;
-    if (document.getElementById("grades-table").getElementsByTagName('tbody')[0].rows.length > 2) {
-        row.parentNode.removeChild(row);
-    }
-}
-
-function calculateAverage() {
-    var table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
-    var rows = table.rows;
-    var totalPoints = 0;
-    var totalWeight = 0;
-    
-    for (var i = 0; i < rows.length - 1; i++) { // Exclude the last row (footer row)
-        var grade = parseFloat(rows[i].cells[0].getElementsByTagName('input')[0].value);
-        var weight = parseFloat(rows[i].cells[1].getElementsByTagName('input')[0].value);
-        
-        if (!isNaN(grade) && !isNaN(weight)) {
-            totalPoints += (grade * weight);
-            totalWeight += weight;
+    <script>
+        function addRow() {
+            var table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+            var cells = newRow.insertCell();
+            cells.innerHTML = '<input type="text" class="grade-input" value="0.00">';
+            cells = newRow.insertCell();
+            cells.innerHTML = '<input type="text" class="weight-input" value="100.00">';
+            cells = newRow.insertCell();
+            cells.innerHTML = '<button class="remove-btn" onclick="removeRow(this)">-</button>';
         }
-    }
-    
-    if (totalWeight > 0) {
-        var average = totalPoints / totalWeight;
-        document.getElementById("average-value").textContent = average.toFixed(2);
-    } else {
-        document.getElementById("average-value").textContent = "-";
-    }
-}
-</script>
 
+        function removeRow(btn) {
+            var row = btn.parentNode.parentNode;
+            if (row.parentNode.rows.length > 1) {
+                row.parentNode.removeChild(row);
+            }
+        }
+
+        function calculateAverage() {
+            var table = document.getElementById("grades-table").getElementsByTagName('tbody')[0];
+            var rows = table.rows;
+            var totalGrade = 0;
+            var totalWeight = 0;
+
+            for (var i = 0; i < rows.length; i++) {
+                var grade = parseFloat(rows[i].querySelector('.grade-input').value);
+                var weight = parseFloat(rows[i].querySelector('.weight-input').value);
+
+                if (!isNaN(grade) && !isNaN(weight)) {
+                    totalGrade += grade * (weight / 100);
+                    totalWeight += weight;
+                }
+            }
+
+            if (totalWeight > 0) {
+                var average = totalGrade / (totalWeight / 100);
+                document.getElementById('average-value').textContent = average.toFixed(2);
+            } else {
+                document.getElementById('average-value').textContent = "-";
+            }
+        }
+    </script>
 </body>
 </html>
