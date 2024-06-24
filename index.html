@@ -6,102 +6,90 @@
     <title>Notenrechner</title>
     <style>
         body {
+            background-color: #1a1a1a; /* Dunkle Hintergrundfarbe */
+            color: #ffffff; /* Weiße Schriftfarbe */
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
+        }
+        .calculator-box {
+            background-color: #333333; /* Dunkles Grau für die Box */
             padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            text-align: center;
         }
-        h1 {
+        .calculator-box h2 {
+            font-size: 1.5rem;
             margin-bottom: 20px;
-            color: #333;
         }
-        .note {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
+        .input-group {
+            margin-bottom: 10px;
         }
-        .note label {
-            margin-right: 10px;
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
         }
-        .note input {
-            width: 60px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #666666;
+            border-radius: 4px;
+            background-color: #444444;
+            color: #ffffff;
         }
-        .buttons {
-            margin-top: 20px;
+        .input-group input:focus {
+            outline: none;
+            border-color: #999999;
         }
-        .buttons button {
-            margin: 0 5px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
+        .btn-calculate {
+            background-color: #4CAF50; /* Grün für den Berechnen-Button */
+            color: #ffffff;
             border: none;
-            border-radius: 3px;
+            padding: 10px 20px;
+            font-size: 1rem;
             cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
-        #result {
-            margin-top: 20px;
-            font-size: 1.2em;
+        .btn-calculate:hover {
+            background-color: #45a049; /* Dunkleres Grün beim Hover */
         }
     </style>
 </head>
 <body>
-    <h1>Notenrechner</h1>
-    <div id="noten-container">
-        <div class="note">
-            <label>Note:</label>
-            <input type="number" class="note-input" step="0.01" min="1" max="6">
-            <label> Gewichtung:</label>
-            <input type="number" class="weight-input" step="0.01" min="0" max="10">
+    <div class="calculator-box">
+        <h2>Notenrechner</h2>
+        <div class="input-group">
+            <label for="note">Note:</label>
+            <input type="number" id="note" min="1" max="6" step="0.1" placeholder="z.B. 1.5" required>
         </div>
+        <div class="input-group">
+            <label for="gewichtung">Gewichtung (%):</label>
+            <input type="number" id="gewichtung" min="1" max="100" placeholder="z.B. 40" required>
+        </div>
+        <button class="btn-calculate" onclick="calculateAverage()">Berechnen</button>
+        <div id="ergebnis" style="margin-top: 10px;"></div>
     </div>
-    <div class="buttons">
-        <button onclick="addNote()">Note hinzufügen</button>
-        <button onclick="calculateAverage()">Durchschnitt berechnen</button>
-    </div>
-    <div id="result"></div>
 
     <script>
-        function addNote() {
-            const noteDiv = document.createElement('div');
-            noteDiv.classList.add('note');
-            noteDiv.innerHTML = `
-                <label>Note:</label>
-                <input type="number" class="note-input" step="0.01" min="1" max="6">
-                <label> Gewichtung:</label>
-                <input type="number" class="weight-input" step="0.01" min="0" max="10">
-            `;
-            document.getElementById('noten-container').appendChild(noteDiv);
-        }
-
         function calculateAverage() {
-            const notes = document.querySelectorAll('.note-input');
-            const weights = document.querySelectorAll('.weight-input');
-            let totalWeight = 0, weightedSum = 0;
-
-            notes.forEach((note, i) => {
-                const noteValue = parseFloat(note.value);
-                const weightValue = parseFloat(weights[i].value);
-                if (!isNaN(noteValue) && !isNaN(weightValue)) {
-                    totalWeight += weightValue;
-                    weightedSum += noteValue * weightValue;
-                }
-            });
-
-            if (totalWeight === 0) {
-                document.getElementById('result').textContent = "Bitte geben Sie Noten und Gewichtungen ein.";
-            } else {
-                const average = weightedSum / totalWeight;
-                document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
+            var note = parseFloat(document.getElementById('note').value);
+            var gewichtung = parseInt(document.getElementById('gewichtung').value);
+            
+            if (isNaN(note) || isNaN(gewichtung) || gewichtung <= 0 || gewichtung > 100) {
+                document.getElementById('ergebnis').innerHTML = '<p style="color: red;">Bitte gültige Werte eingeben.</p>';
+                return;
             }
+            
+            var durchschnitt = note * (gewichtung / 100);
+            document.getElementById('ergebnis').innerHTML = '<p>Durchschnitt: ' + durchschnitt.toFixed(2) + '</p>';
         }
     </script>
 </body>
