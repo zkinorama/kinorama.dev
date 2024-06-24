@@ -6,56 +6,70 @@
     <title>Notenrechner</title>
     <style>
         body {
-            background-color: #121212;
-            color: #ffffff;
             font-family: Monaco, monospace;
-            text-align: center;
+            background-color: #222;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
         .container {
-            margin: 20px auto;
+            background-color: #333;
             padding: 20px;
-            width: 60%;
-            background-color: #333333;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            width: 80%;
+            max-width: 600px;
         }
         table {
             width: 100%;
+            border-collapse: collapse;
             margin-bottom: 10px;
-            text-align: left;
         }
-        table th, table td {
+        table, th, td {
+            border: 1px solid #444;
+        }
+        th, td {
             padding: 8px;
-            border-bottom: 1px solid #555555;
-        }
-        table th {
-            background-color: #222222;
-        }
-        .button {
-            background-color: #555555;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
             text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-            border-radius: 5px;
         }
-        .button:hover {
-            background-color: #777777;
+        th {
+            background-color: #555;
         }
         input[type="number"] {
             width: 60px;
+            text-align: center;
+            padding: 5px;
+            border: none;
+            background-color: #444;
+            color: #fff;
+        }
+        input[type="button"] {
+            padding: 8px 16px;
+            background-color: #777;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        input[type="button"]:hover {
+            background-color: #999;
+        }
+        #average {
+            text-align: left;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        #desired-grade {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Notenrechner</h2>
-        <table id="notenTable">
+        <table id="gradesTable">
             <thead>
                 <tr>
                     <th>Note</th>
@@ -65,112 +79,96 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="number" min="1" max="6" step="1" required></td>
-                    <td><input type="number" min="1" max="100" step="1" required></td>
-                    <td><button type="button" class="removeButton" onclick="removeRow(this)">-</button></td>
+                    <td><input type="number" min="1" max="6"></td>
+                    <td><input type="number" min="1" max="100"></td>
+                    <td><input type="button" value="-" onclick="removeRow(this)"></td>
+                </tr>
+                <tr>
+                    <td><input type="number" min="1" max="6"></td>
+                    <td><input type="number" min="1" max="100"></td>
+                    <td><input type="button" value="+" onclick="addRow()"></td>
                 </tr>
             </tbody>
         </table>
-        <button type="button" class="button" onclick="addRow()">+</button>
-        <div>
-            Durchschnitt: <span id="durchschnitt">-</span>
+        <div id="average">
+            Durchschnitt: <span id="averageGrade">-</span>
         </div>
-        <div>
-            <button type="button" class="button" onclick="berechneDurchschnitt()">Durchschnitt berechnen</button>
-        </div>
-        <hr>
-        <h3>Gewünschten Durchschnitt berechnen</h3>
-        <div>
-            <label for="gewuenschterDurchschnitt">Gewünschter Durchschnitt:</label>
-            <input type="number" id="gewuenschterDurchschnitt" min="1" max="6" step="0.1" required>
-        </div>
-        <div>
-            <label for="gewichtungNaechsteNote">Gewichtung der nächsten Note (%):</label>
-            <input type="number" id="gewichtungNaechsteNote" min="1" max="100" step="1" required>
-        </div>
-        <div>
-            <button type="button" class="button" onclick="berechneNaechsteNote()">Berechnen</button>
+        <div id="desired-grade">
+            <input type="number" id="desiredAverage" min="1" max="6" step="0.1" placeholder="Gewünschter Durchschnitt">
+            <input type="number" id="nextWeight" min="1" max="100" placeholder="Gewichtung (%)">
+            <input type="button" value="Berechnen" onclick="calculateDesiredGrade()">
+            <p id="result"></p>
         </div>
     </div>
 
     <script>
         function addRow() {
-            var table = document.getElementById("notenTable").getElementsByTagName('tbody')[0];
-            var newRow = table.insertRow();
+            var table = document.getElementById("gradesTable").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length - 1);
             var cells = newRow.insertCell();
-            cells.innerHTML = '<td><input type="number" min="1" max="6" step="1" required></td>';
+            cells.innerHTML = '<input type="number" min="1" max="6">';
             cells = newRow.insertCell();
-            cells.innerHTML = '<td><input type="number" min="1" max="100" step="1" required></td>';
+            cells.innerHTML = '<input type="number" min="1" max="100">';
             cells = newRow.insertCell();
-            cells.innerHTML = '<td><button type="button" class="removeButton" onclick="removeRow(this)">-</button></td>';
+            cells.innerHTML = '<input type="button" value="-" onclick="removeRow(this)">';
         }
 
         function removeRow(button) {
             var row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
+            if (document.getElementById("gradesTable").rows.length > 3) { // ensure at least one row remains
+                row.parentNode.removeChild(row);
+            }
         }
 
-        function berechneDurchschnitt() {
-            var table = document.getElementById("notenTable").getElementsByTagName('tbody')[0];
+        function calculateAverage() {
+            var table = document.getElementById("gradesTable").getElementsByTagName('tbody')[0];
             var rows = table.rows;
             var sum = 0;
             var totalWeight = 0;
 
-            for (var i = 0; i < rows.length; i++) {
+            for (var i = 0; i < rows.length - 1; i++) { // exclude the last row (+ button)
                 var cells = rows[i].cells;
-                var note = parseFloat(cells[0].getElementsByTagName('input')[0].value);
+                var grade = parseFloat(cells[0].getElementsByTagName('input')[0].value);
                 var weight = parseFloat(cells[1].getElementsByTagName('input')[0].value);
 
-                if (!isNaN(note) && !isNaN(weight)) {
-                    sum += (note * weight);
+                if (!isNaN(grade) && !isNaN(weight)) {
+                    sum += (grade * weight);
                     totalWeight += weight;
                 }
             }
 
-            if (totalWeight > 0) {
-                var durchschnitt = sum / totalWeight;
-                document.getElementById("durchschnitt").textContent = durchschnitt.toFixed(2);
-            } else {
-                document.getElementById("durchschnitt").textContent = "-";
-            }
+            var average = sum / totalWeight;
+            document.getElementById("averageGrade").textContent = average.toFixed(2);
         }
 
-        function berechneNaechsteNote() {
-            var gewuenschterDurchschnitt = parseFloat(document.getElementById("gewuenschterDurchschnitt").value);
-            var gewichtungNaechsteNote = parseFloat(document.getElementById("gewichtungNaechsteNote").value);
+        function calculateDesiredGrade() {
+            var desiredAverage = parseFloat(document.getElementById("desiredAverage").value);
+            var nextWeight = parseFloat(document.getElementById("nextWeight").value);
 
-            if (!isNaN(gewuenschterDurchschnitt) && !isNaN(gewichtungNaechsteNote)) {
-                var table = document.getElementById("notenTable").getElementsByTagName('tbody')[0];
+            if (!isNaN(desiredAverage) && !isNaN(nextWeight)) {
+                var table = document.getElementById("gradesTable").getElementsByTagName('tbody')[0];
                 var rows = table.rows;
                 var sum = 0;
-                var totalWeight = 0;
+                var totalWeight = nextWeight;
 
-                for (var i = 0; i < rows.length; i++) {
+                for (var i = 0; i < rows.length - 1; i++) { // exclude the last row (+ button)
                     var cells = rows[i].cells;
-                    var note = parseFloat(cells[0].getElementsByTagName('input')[0].value);
+                    var grade = parseFloat(cells[0].getElementsByTagName('input')[0].value);
                     var weight = parseFloat(cells[1].getElementsByTagName('input')[0].value);
 
-                    if (!isNaN(note) && !isNaN(weight)) {
-                        sum += (note * weight);
+                    if (!isNaN(grade) && !isNaN(weight)) {
+                        sum += (grade * weight);
                         totalWeight += weight;
                     }
                 }
 
-                if (totalWeight > 0) {
-                    var aktuellerDurchschnitt = sum / totalWeight;
-                    var fehlendeGewichtung = 100 - totalWeight;
-                    var erforderlicheNote = (gewuenschterDurchschnitt * 100 - sum) / gewichtungNaechsteNote;
-                    var naechsteNote = (gewichtungNaechsteNote * erforderlicheNote + fehlendeGewichtung * aktuellerDurchschnitt) / 100;
-
-                    alert("Um den gewünschten Durchschnitt von " + gewuenschterDurchschnitt.toFixed(2) +
-                        " zu erreichen, benötigen Sie mindestens eine Note von " + naechsteNote.toFixed(2));
-                } else {
-                    alert("Bitte geben Sie zunächst mindestens eine Note ein.");
-                }
-            } else {
-                alert("Bitte geben Sie einen gültigen gewünschten Durchschnitt und eine gültige Gewichtung ein.");
+                var requiredGrade = (desiredAverage * totalWeight - sum) / nextWeight;
+                document.getElementById("result").textContent = "Benötigte Note für gewünschten Durchschnitt: " + requiredGrade.toFixed(2);
             }
         }
+
+        // Initial calculation on page load
+        calculateAverage();
     </script>
 </body>
 </html>
