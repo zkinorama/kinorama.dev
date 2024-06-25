@@ -9,74 +9,109 @@
             width: 100%;
             border-collapse: collapse;
         }
-        table, th, td {
-            border: 1px solid black;
-        }
         th, td {
-            padding: 10px;
+            border: 1px solid black;
+            padding: 8px;
             text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="number"] {
+            width: 80px;
         }
     </style>
 </head>
 <body>
+    <h1>Notenrechner</h1>
+    <table id="notenTabelle">
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th>Gewichtung</th>
+                <th>Aktion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="number" step="0.1" min="1" max="6"></td>
+                <td><input type="number" step="0.1" min="0"></td>
+                <td><button onclick="removeRow(this)">Entfernen</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <button onclick="addRow()">Zeile hinzufügen</button>
+    <button onclick="calculateAverage()">Durchschnitt berechnen</button>
+    <p id="average"></p>
 
-<h2>Notenrechner</h2>
-<table id="notenTabelle">
-    <thead>
-        <tr>
-            <th>Note</th>
-            <th>Gewichtung</th>
-            <th>Aktionen</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><input type="number" step="0.1" min="1" max="6" class="note" required></td>
-            <td><input type="number" step="1" min="1" class="gewichtung" required></td>
-            <td><button onclick="entferneZeile(this)">Entfernen</button></td>
-        </tr>
-    </tbody>
-</table>
-<br>
-<button onclick="neueZeile()">Neue Zeile hinzufügen</button>
-<br><br>
-<button onclick="berechneDurchschnitt()">Durchschnitt berechnen</button>
-<h3>Durchschnitt: <span id="durchschnitt">0</span></h3>
+    <h2>Gewünschter Durchschnitt Berechnen</h2>
+    <p>
+        Gewünschter Durchschnitt: <input type="number" step="0.1" id="desiredAverage"><br>
+        Gewichtung der nächsten Note: <input type="number" step="0.1" id="nextWeight"><br>
+        <button onclick="calculateNeededGrade()">Berechne benötigte Note</button>
+    </p>
+    <p id="neededGrade"></p>
 
-<script>
-    function neueZeile() {
-        let table = document.getElementById('notenTabelle').getElementsByTagName('tbody')[0];
-        let newRow = table.insertRow();
-        newRow.innerHTML = `<td><input type="number" step="0.1" min="1" max="6" class="note" required></td>
-                            <td><input type="number" step="1" min="1" class="gewichtung" required></td>
-                            <td><button onclick="entferneZeile(this)">Entfernen</button></td>`;
-    }
+    <script>
+        function addRow() {
+            const table = document.getElementById('notenTabelle').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
 
-    function entferneZeile(button) {
-        let row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
-    }
-
-    function berechneDurchschnitt() {
-        let noten = document.getElementsByClassName('note');
-        let gewichtungen = document.getElementsByClassName('gewichtung');
-        let gesamtGewichtung = 0;
-        let gewichteteSumme = 0;
-
-        for (let i = 0; i < noten.length; i++) {
-            let note = parseFloat(noten[i].value);
-            let gewichtung = parseFloat(gewichtungen[i].value);
-
-            if (!isNaN(note) && !isNaN(gewichtung)) {
-                gesamtGewichtung += gewichtung;
-                gewichteteSumme += note * gewichtung;
-            }
+            cell1.innerHTML = '<input type="number" step="0.1" min="1" max="6">';
+            cell2.innerHTML = '<input type="number" step="0.1" min="0">';
+            cell3.innerHTML = '<button onclick="removeRow(this)">Entfernen</button>';
         }
 
-        let durchschnitt = gesamtGewichtung ? (gewichteteSumme / gesamtGewichtung).toFixed(2) : 0;
-        document.getElementById('durchschnitt').innerText = durchschnitt;
-    }
-</script>
+        function removeRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
 
+        function calculateAverage() {
+            const rows = document.getElementById('notenTabelle').getElementsByTagName('tbody')[0].rows;
+            let totalWeight = 0;
+            let weightedSum = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const note = parseFloat(rows[i].cells[0].getElementsByTagName('input')[0].value);
+                const weight = parseFloat(rows[i].cells[1].getElementsByTagName('input')[0].value);
+
+                if (!isNaN(note) && !isNaN(weight)) {
+                    weightedSum += note * weight;
+                    totalWeight += weight;
+                }
+            }
+
+            const average = totalWeight ? (weightedSum / totalWeight).toFixed(2) : 0;
+            document.getElementById('average').innerText = `Durchschnitt: ${average}`;
+        }
+
+        function calculateNeededGrade() {
+            const desiredAverage = parseFloat(document.getElementById('desiredAverage').value);
+            const nextWeight = parseFloat(document.getElementById('nextWeight').value);
+            const rows = document.getElementById('notenTabelle').getElementsByTagName('tbody')[0].rows;
+
+            let totalWeight = 0;
+            let weightedSum = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const note = parseFloat(rows[i].cells[0].getElementsByTagName('input')[0].value);
+                const weight = parseFloat(rows[i].cells[1].getElementsByTagName('input')[0].value);
+
+                if (!isNaN(note) && !isNaN(weight)) {
+                    weightedSum += note * weight;
+                    totalWeight += weight;
+                }
+            }
+
+            if (!isNaN(desiredAverage) && !isNaN(nextWeight)) {
+                const neededGrade = ((desiredAverage * (totalWeight + nextWeight)) - weightedSum) / nextWeight;
+                document.getElementById('neededGrade').innerText = `Benötigte Note: ${neededGrade.toFixed(2)}`;
+            }
+        }
+    </script>
 </body>
 </html>
