@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notenrechner</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
         table {
             width: 100%;
+            max-width: 500px;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         th, td {
             border: 1px solid black;
@@ -18,7 +29,16 @@
             background-color: #f2f2f2;
         }
         input[type="number"] {
-            width: 80px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #average, #neededGrade {
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -40,17 +60,19 @@
             </tr>
         </tbody>
     </table>
-    <button onclick="addRow()">Zeile hinzufügen</button>
-    <button onclick="calculateAverage()">Durchschnitt berechnen</button>
-    <p id="average"></p>
+    <div style="text-align: center;">
+        <button onclick="addRow()">Zeile hinzufügen</button>
+        <button onclick="calculateAverage()">Durchschnitt berechnen</button>
+        <p id="average"></p>
 
-    <h2>Gewünschter Durchschnitt Berechnen</h2>
-    <p>
-        Gewünschter Durchschnitt: <input type="number" step="0.1" id="desiredAverage"><br>
-        Gewichtung der nächsten Note: <input type="number" step="0.1" id="nextWeight"><br>
-        <button onclick="calculateNeededGrade()">Berechne benötigte Note</button>
-    </p>
-    <p id="neededGrade"></p>
+        <h2>Gewünschter Durchschnitt Berechnen</h2>
+        <p>
+            Gewünschter Durchschnitt: <input type="number" step="0.1" id="desiredAverage"><br>
+            Gewichtung der nächsten Note: <input type="number" step="0.1" id="nextWeight"><br>
+            <button onclick="calculateNeededGrade()">Berechne benötigte Note</button>
+        </p>
+        <p id="neededGrade"></p>
+    </div>
 
     <script>
         function addRow() {
