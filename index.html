@@ -5,69 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notenrechner</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .note-container {
-            margin-bottom: 10px;
+        table, th, td {
+            border: 1px solid black;
         }
-        .note-container input {
-            margin-right: 10px;
-        }
-        #ergebnis {
-            font-weight: bold;
-            margin-top: 20px;
+        th, td {
+            padding: 10px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Notenrechner</h1>
-    <div id="notenfeld">
-        <div class="note-container">
-            <input type="number" placeholder="Note" class="note">
-            <input type="number" placeholder="Gewichtung" class="gewichtung">
-        </div>
-    </div>
-    <button onclick="neueNoteHinzufuegen()">Weitere Note hinzufügen</button>
-    <button onclick="durchschnittBerechnen()">Durchschnitt berechnen</button>
-    <div id="ergebnis"></div>
 
-    <script>
-        function neueNoteHinzufuegen() {
-            const notenfeld = document.getElementById('notenfeld');
-            const div = document.createElement('div');
-            div.className = 'note-container';
-            div.innerHTML = `
-                <input type="number" placeholder="Note" class="note">
-                <input type="number" placeholder="Gewichtung" class="gewichtung">
-            `;
-            notenfeld.appendChild(div);
+<h2>Notenrechner</h2>
+<table id="notenTabelle">
+    <thead>
+        <tr>
+            <th>Note</th>
+            <th>Gewichtung</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="number" step="0.1" min="1" max="6" class="note" required></td>
+            <td><input type="number" step="1" min="1" class="gewichtung" required></td>
+            <td><button onclick="entferneZeile(this)">Entfernen</button></td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<button onclick="neueZeile()">Neue Zeile hinzufügen</button>
+<br><br>
+<button onclick="berechneDurchschnitt()">Durchschnitt berechnen</button>
+<h3>Durchschnitt: <span id="durchschnitt">0</span></h3>
+
+<script>
+    function neueZeile() {
+        let table = document.getElementById('notenTabelle').getElementsByTagName('tbody')[0];
+        let newRow = table.insertRow();
+        newRow.innerHTML = `<td><input type="number" step="0.1" min="1" max="6" class="note" required></td>
+                            <td><input type="number" step="1" min="1" class="gewichtung" required></td>
+                            <td><button onclick="entferneZeile(this)">Entfernen</button></td>`;
+    }
+
+    function entferneZeile(button) {
+        let row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+
+    function berechneDurchschnitt() {
+        let noten = document.getElementsByClassName('note');
+        let gewichtungen = document.getElementsByClassName('gewichtung');
+        let gesamtGewichtung = 0;
+        let gewichteteSumme = 0;
+
+        for (let i = 0; i < noten.length; i++) {
+            let note = parseFloat(noten[i].value);
+            let gewichtung = parseFloat(gewichtungen[i].value);
+
+            if (!isNaN(note) && !isNaN(gewichtung)) {
+                gesamtGewichtung += gewichtung;
+                gewichteteSumme += note * gewichtung;
+            }
         }
 
-        function durchschnittBerechnen() {
-            const noten = document.getElementsByClassName('note');
-            const gewichtungen = document.getElementsByClassName('gewichtung');
-            let summeGewichtungen = 0;
-            let gewichteteSumme = 0;
+        let durchschnitt = gesamtGewichtung ? (gewichteteSumme / gesamtGewichtung).toFixed(2) : 0;
+        document.getElementById('durchschnitt').innerText = durchschnitt;
+    }
+</script>
 
-            for (let i = 0; i < noten.length; i++) {
-                const note = parseFloat(noten[i].value);
-                const gewichtung = parseFloat(gewichtungen[i].value);
-                if (!isNaN(note) && !isNaN(gewichtung)) {
-                    gewichteteSumme += note * gewichtung;
-                    summeGewichtungen += gewichtung;
-                }
-            }
-
-            const durchschnitt = gewichteteSumme / summeGewichtungen;
-            const ergebnisDiv = document.getElementById('ergebnis');
-            if (!isNaN(durchschnitt)) {
-                ergebnisDiv.textContent = `Der gewichtete Durchschnitt ist: ${durchschnitt.toFixed(2)}`;
-            } else {
-                ergebnisDiv.textContent = 'Bitte geben Sie gültige Noten und Gewichtungen ein.';
-            }
-        }
-    </script>
 </body>
 </html>
