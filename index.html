@@ -7,173 +7,66 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
-        h1, h2 {
-            color: #333;
+        .note-container {
+            margin-bottom: 10px;
         }
-        .note {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
+        .note-container input {
+            margin-right: 10px;
         }
-        .note input {
-            margin-left: 10px;
-            -moz-appearance: textfield;
-        }
-        .note input::-webkit-outer-spin-button,
-        .note input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 10px 20px;
-            margin: 5px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-        }
-        .delete-btn {
-            background-color: #f44336;
-            margin-left: 10px;
-            padding: 4px 10px;
-        }
-        #result, #required-note-result {
+        #ergebnis {
+            font-weight: bold;
             margin-top: 20px;
-            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
     <h1>Notenrechner</h1>
-    <div id="noten-container">
-        <div class="note">
-            <label>Note:</label>
-            <input type="number" class="note-input" step="0.01" min="1" max="6">
-            <label>Gewichtung:</label>
-            <input type="number" class="weight-input" step="0.01" min="0" max="10" value="1">
-            <button class="delete-btn button" onclick="deleteNote(this)">x</button>
+    <div id="notenfeld">
+        <div class="note-container">
+            <input type="number" placeholder="Note" class="note">
+            <input type="number" placeholder="Gewichtung" class="gewichtung">
         </div>
     </div>
-    <button class="button" onclick="addNote()">Weitere Note hinzufügen</button>
-    <button class="button" onclick="calculateAverage()">Durchschnitt berechnen</button>
-    
-    <h2>Gewünschter Durchschnitt berechnen</h2>
-    <label>Gewünschter Durchschnitt:</label>
-    <input type="number" id="desired-average" step="0.01" min="1" max="6">
-    <label>Gewichtung der nächsten Note:</label>
-    <input type="number" id="next-weight" step="0.01" min="0" max="10" value="1">
-    <button class="button" onclick="calculateRequiredNote()">Benötigte Note berechnen</button>
-    <div id="required-note-result"></div>
+    <button onclick="neueNoteHinzufuegen()">Weitere Note hinzufügen</button>
+    <button onclick="durchschnittBerechnen()">Durchschnitt berechnen</button>
+    <div id="ergebnis"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            updateEnterKeyBehavior();
-        });
-
-        function updateEnterKeyBehavior() {
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        let nextInput = getNextInput(input);
-                        if (nextInput) {
-                            nextInput.focus();
-                        } else {
-                            addNote();
-                            nextInput = getNextInput(input);
-                            nextInput && nextInput.focus();
-                        }
-                    }
-                });
-            });
-        }
-
-        function getNextInput(currentInput) {
-            let nextInput = currentInput.nextElementSibling;
-            while (nextInput && nextInput.tagName !== 'INPUT') {
-                nextInput = nextInput.nextElementSibling;
-            }
-            if (!nextInput) {
-                let nextNote = currentInput.closest('.note').nextElementSibling;
-                if (nextNote) {
-                    nextInput = nextNote.querySelector('input');
-                }
-            }
-            return nextInput;
-        }
-
-        function addNote() {
-            const noteDiv = document.createElement('div');
-            noteDiv.classList.add('note');
-            noteDiv.innerHTML = `
-                <label>Note:</label>
-                <input type="number" class="note-input" step="0.01" min="1" max="6">
-                <label>Gewichtung:</label>
-                <input type="number" class="weight-input" step="0.01" min="0" max="10" value="1">
-                <button class="delete-btn button" onclick="deleteNote(this)">x</button>
+        function neueNoteHinzufuegen() {
+            const notenfeld = document.getElementById('notenfeld');
+            const div = document.createElement('div');
+            div.className = 'note-container';
+            div.innerHTML = `
+                <input type="number" placeholder="Note" class="note">
+                <input type="number" placeholder="Gewichtung" class="gewichtung">
             `;
-            document.getElementById('noten-container').appendChild(noteDiv);
-            updateEnterKeyBehavior();
+            notenfeld.appendChild(div);
         }
 
-        function deleteNote(button) {
-            button.parentElement.remove();
-        }
+        function durchschnittBerechnen() {
+            const noten = document.getElementsByClassName('note');
+            const gewichtungen = document.getElementsByClassName('gewichtung');
+            let summeGewichtungen = 0;
+            let gewichteteSumme = 0;
 
-        function calculateAverage() {
-            const notes = document.querySelectorAll('.note-input');
-            const weights = document.querySelectorAll('.weight-input');
-            let totalWeight = 0, weightedSum = 0;
-
-            notes.forEach((note, i) => {
-                const noteValue = parseFloat(note.value);
-                const weightValue = parseFloat(weights[i].value);
-                if (!isNaN(noteValue) && !isNaN(weightValue)) {
-                    totalWeight += weightValue;
-                    weightedSum += noteValue * weightValue;
+            for (let i = 0; i < noten.length; i++) {
+                const note = parseFloat(noten[i].value);
+                const gewichtung = parseFloat(gewichtungen[i].value);
+                if (!isNaN(note) && !isNaN(gewichtung)) {
+                    gewichteteSumme += note * gewichtung;
+                    summeGewichtungen += gewichtung;
                 }
-            });
-
-            const average = weightedSum / totalWeight;
-            document.getElementById('result').textContent = `Durchschnitt: ${average.toFixed(2)}`;
-        }
-
-        function calculateRequiredNote() {
-            const desiredAverage = parseFloat(document.getElementById('desired-average').value);
-            const nextWeight = parseFloat(document.getElementById('next-weight').value);
-
-            if (isNaN(desiredAverage) || isNaN(nextWeight)) {
-                document.getElementById('required-note-result').textContent = 'Bitte geben Sie gültige Werte für den gewünschten Durchschnitt und die Gewichtung der nächsten Note ein.';
-                return;
             }
 
-            const notes = document.querySelectorAll('.note-input');
-            const weights = document.querySelectorAll('.weight-input');
-            let totalWeight = 0, weightedSum = 0;
-
-            notes.forEach((note, i) => {
-                const noteValue = parseFloat(note.value);
-                const weightValue = parseFloat(weights[i].value);
-                if (!isNaN(noteValue) && !isNaN(weightValue)) {
-                    totalWeight += weightValue;
-                    weightedSum += noteValue * weightValue;
-                }
-            });
-
-            const requiredNote = (desiredAverage * (totalWeight + nextWeight) - weightedSum) / nextWeight;
-            document.getElementById('required-note-result').textContent = `Benötigte Note: ${requiredNote.toFixed(2)}`;
+            const durchschnitt = gewichteteSumme / summeGewichtungen;
+            const ergebnisDiv = document.getElementById('ergebnis');
+            if (!isNaN(durchschnitt)) {
+                ergebnisDiv.textContent = `Der gewichtete Durchschnitt ist: ${durchschnitt.toFixed(2)}`;
+            } else {
+                ergebnisDiv.textContent = 'Bitte geben Sie gültige Noten und Gewichtungen ein.';
+            }
         }
     </script>
 </body>
