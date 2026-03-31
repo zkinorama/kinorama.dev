@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kinorama.dev – Notenrechner</title>
+    <link rel="shortcut icon" href="http://example.com/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #12121a;
+            --bg3: #1a1a26;
+            --bg4: #22222f;
+            --border: #2a2a3a;
+            --border-hover: #3a3a50;
+            --t1: #e8e8f0;
+            --t2: #a0a0b8;
+            --t3: #6a6a82;
+            --accent: #7c6aff;
+            --accent2: #a78bfa;
+            --accent-glow: rgba(124, 106, 255, 0.15);
+            --green: #34d399;
+            --green-dim: rgba(52, 211, 153, 0.12);
+            --red: #f87171;
+            --red-dim: rgba(248, 113, 113, 0.12);
+            --orange: #fbbf24;
+            --orange-dim: rgba(251, 191, 36, 0.12);
+            --radius: 10px;
+            --radius-sm: 6px;
+        }
+
+        body {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--t1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px;
+            overflow-x: hidden;
+        }
+
+        /* ── ambient background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%;
+            left: -20%;
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(ellipse, rgba(124, 106, 255, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 70vw;
+            height: 70vh;
+            background: radial-gradient(ellipse, rgba(52, 211, 153, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── nav bar ── */
+        nav {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+        .nav-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--t2);
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-brand:hover { color: var(--t1); }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--t3);
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--t1);
+            background: var(--bg3);
+            border-color: var(--border);
+        }
+        .nav-link.active {
+            color: var(--accent2);
+            background: var(--accent-glow);
+            border-color: rgba(124, 106, 255, 0.2);
+        }
+
+        /* ── header ── */
+        header {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 580px;
+            padding: 12px 0 12px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--t1) 0%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--t3);
+            margin-top: 8px;
+        }
+
+        /* ── main card ── */
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 580px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-top: 24px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* ── grade rows ── */
+        .grade-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .grade-row {
+            display: grid;
+            grid-template-columns: 1fr 100px 42px;
+            gap: 8px;
+            align-items: center;
+            animation: slideIn 0.25s cubic-bezier(.4,0,.2,1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grade-row.removing {
+            animation: slideOut 0.2s cubic-bezier(.4,0,.2,1) forwards;
+        }
+
+        @keyframes slideOut {
+            to { opacity: 0; transform: translateY(8px) scale(0.97); }
+        }
+
+        .grade-header {
+            display: grid;
+            grid-template-columns: 1fr 100px 42px;
+            gap: 8px;
+            margin-bottom: 6px;
+            padding: 0 2px;
+        }
+
+        .grade-header span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--t3);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ── inputs ── */
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            height: 42px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--t1);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 0 12px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background: var(--bg4);
+        }
+
+        input::placeholder {
+            color: var(--t3);
+            font-weight: 400;
+        }
+
+        /* hide number spinners */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        /* ── buttons ── */
+        .btn-remove {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--t3);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-remove:hover {
+            background: var(--red-dim);
+            border-color: rgba(248, 113, 113, 0.25);
+            color: var(--red);
+        }
+
+        .btn-add {
+            width: 100%;
+            height: 42px;
+            margin-top: 8px;
+            background: transparent;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--t3);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-add:hover {
+            border-color: var(--accent);
+            color: var(--accent2);
+            background: var(--accent-glow);
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 48px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--accent), #6a5acd);
+            border: none;
+            border-radius: var(--radius);
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.08));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(124, 106, 255, 0.35);
+        }
+
+        .btn-primary:hover::after { opacity: 1; }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 12px rgba(124, 106, 255, 0.2);
+        }
+
+        /* ── result display ── */
+        .result-box {
+            margin-top: 20px;
+            padding: 24px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.35s cubic-bezier(.4,0,.2,1);
+        }
+
+        .result-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--t3);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+
+        .result-bar {
+            height: 6px;
+            border-radius: 99px;
+            background: var(--bg4);
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .result-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            width: 0%;
+            transition: all 0.6s cubic-bezier(.4,0,.2,1);
+        }
+
+        .result-status {
+            font-size: 13px;
+            color: var(--t2);
+            margin-top: 12px;
+        }
+
+        .result-status .pass { color: var(--green); }
+        .result-status .fail { color: var(--red); }
+        .result-status .warn { color: var(--orange); }
+
+        /* ── divider ── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 28px 0;
+        }
+
+        /* ── needed grade section ── */
+        .needed-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--t2);
+            padding-left: 2px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ── footer ── */
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 32px 0 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--t3);
+            letter-spacing: 0.5px;
+        }
+
+        /* ── tooltip ── */
+        .tip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--t3);
+            margin-top: 10px;
+            padding: 6px 10px;
+            background: var(--bg3);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .tip kbd {
+            display: inline-block;
+            padding: 1px 6px;
+            background: var(--bg4);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--t2);
+        }
+
+        /* ── compensation panel ── */
+        .comp-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.35s cubic-bezier(.4,0,.2,1);
+        }
+
+        .comp-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .comp-header {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--t3);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .comp-meters {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .comp-meter {
+            text-align: center;
+            padding: 14px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg2);
+        }
+
+        .comp-meter-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .comp-meter-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .comp-meter-sub {
+            font-size: 11px;
+            color: var(--t3);
+            margin-top: 4px;
+        }
+
+        .comp-meter.plus .comp-meter-label { color: var(--green); }
+        .comp-meter.plus .comp-meter-value { color: var(--green); }
+        .comp-meter.minus .comp-meter-label { color: var(--red); }
+        .comp-meter.minus .comp-meter-value { color: var(--red); }
+        .comp-meter.netto .comp-meter-label { color: var(--accent2); }
+
+        .comp-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .comp-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+        }
+
+        .comp-row-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .comp-row-pts {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .comp-row.is-plus { background: var(--green-dim); }
+        .comp-row.is-plus .comp-row-pts { color: var(--green); }
+        .comp-row.is-minus { background: var(--red-dim); }
+        .comp-row.is-minus .comp-row-pts { color: var(--red); }
+        .comp-row.is-neutral { background: var(--bg4); }
+        .comp-row.is-neutral .comp-row-pts { color: var(--t3); }
+
+        .comp-verdict {
+            margin-top: 14px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .comp-verdict.pass {
+            background: var(--green-dim);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            color: var(--green);
+        }
+
+        .comp-verdict.fail {
+            background: var(--red-dim);
+            border: 1px solid rgba(248, 113, 113, 0.25);
+            color: var(--red);
+        }
+
+        .comp-verdict.neutral {
+            background: var(--bg4);
+            border: 1px solid var(--border);
+            color: var(--t2);
+        }
+
+        /* ── responsive ── */
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            h1 { font-size: 22px; }
+            .result-value { font-size: 36px; }
+            .input-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- nav -->
+    <nav>
+        <a href="/" class="nav-brand">kinorama.dev</a>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/notenrechner" class="nav-link active">Notenrechner</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Notenrechner</h1>
+        <p class="subtitle">Gewichteter Durchschnitt & benötigte Note</p>
+    </header>
+
+    <!-- ── Durchschnitt berechnen ── -->
+    <div class="card">
+        <div class="card-title">Noten eingeben</div>
+
+        <div class="grade-header">
+            <span>Note</span>
+            <span>Gewichtung</span>
+            <span></span>
+        </div>
+
+        <div class="grade-list" id="gradeList">
+            <div class="grade-row">
+                <input type="number" step="0.1" min="1" max="6" placeholder="z.B. 5.2" onkeydown="handleKey(event, this)">
+                <input type="number" step="0.1" min="0" value="1" placeholder="1" onkeydown="handleKey(event, this)">
+                <button class="btn-remove" onclick="removeRow(this)" title="Entfernen">✕</button>
+            </div>
+        </div>
+
+        <button class="btn-add" onclick="addRow()">
+            <span style="font-size:16px">+</span> Zeile hinzufügen
+        </button>
+
+        <div class="tip">
+            <kbd>Enter</kbd> springt zum nächsten Feld oder fügt neue Zeile hinzu
+        </div>
+
+        <button class="btn-primary" onclick="calculateAverage()">Durchschnitt berechnen</button>
+
+        <div class="result-box" id="avgResult">
+            <div class="result-label">Durchschnitt</div>
+            <div class="result-value" id="avgValue">–</div>
+            <div class="result-bar"><div class="result-bar-fill" id="avgBar"></div></div>
+            <div class="result-status" id="avgStatus"></div>
+        </div>
+
+        <!-- Kompensation / Doppelkompensation -->
+        <div class="comp-panel" id="compPanel">
+            <div class="comp-header">Kompensation (Doppelkompensation)</div>
+            <div class="comp-meters">
+                <div class="comp-meter plus">
+                    <div class="comp-meter-label">Plus</div>
+                    <div class="comp-meter-value" id="compPlus">0</div>
+                    <div class="comp-meter-sub">Punkte</div>
+                </div>
+                <div class="comp-meter minus">
+                    <div class="comp-meter-label">Minus</div>
+                    <div class="comp-meter-value" id="compMinus">0</div>
+                    <div class="comp-meter-sub">×2 gewichtet</div>
+                </div>
+                <div class="comp-meter netto" id="compNettoMeter">
+                    <div class="comp-meter-label">Netto</div>
+                    <div class="comp-meter-value" id="compNetto">0</div>
+                    <div class="comp-meter-sub">Saldo</div>
+                </div>
+            </div>
+            <div class="comp-breakdown" id="compBreakdown"></div>
+            <div class="comp-verdict" id="compVerdict"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- ── Benötigte Note ── -->
+        <div class="card-title">Benötigte Note</div>
+
+        <div class="needed-section">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gewünschter Durchschnitt</label>
+                    <input type="number" step="0.1" min="1" max="6" id="desiredAverage" placeholder="z.B. 4.5">
+                </div>
+                <div class="input-group">
+                    <label>Gewichtung nächste Note</label>
+                    <input type="number" step="0.1" min="0" id="nextWeight" value="1" placeholder="1">
+                </div>
+            </div>
+            <button class="btn-primary" onclick="calculateNeededGrade()">Berechne benötigte Note</button>
+        </div>
+
+        <div class="result-box" id="neededResult">
+            <div class="result-label">Benötigte Note</div>
+            <div class="result-value" id="neededValue">–</div>
+            <div class="result-bar"><div class="result-bar-fill" id="neededBar"></div></div>
+            <div class="result-status" id="neededStatus"></div>
+        </div>
+    </div>
+
+    <footer>&copy; 2025 kinorama.dev</footer>
+
+    <script>
+        function addRow() {
+            const list = document.getElementById('gradeList');
+            const row = document.createElement('div');
+            row.className = 'grade-row';
+            row.innerHTML = `
+                <input type="number" step="0.1" min="1" max="6" placeholder="z.B. 5.2" onkeydown="handleKey(event, this)">
+                <input type="number" step="0.1" min="0" value="1" placeholder="1" onkeydown="handleKey(event, this)">
+                <button class="btn-remove" onclick="removeRow(this)" title="Entfernen">✕</button>
+            `;
+            list.appendChild(row);
+            row.querySelector('input').focus();
+        }
+
+        function removeRow(btn) {
+            const row = btn.parentElement;
+            const list = document.getElementById('gradeList');
+            if (list.children.length <= 1) return;
+            row.classList.add('removing');
+            setTimeout(() => row.remove(), 200);
+        }
+
+        function getGrades() {
+            const rows = document.querySelectorAll('#gradeList .grade-row');
+            let totalWeight = 0;
+            let weightedSum = 0;
+            let count = 0;
+
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const note = parseFloat(inputs[0].value);
+                const weight = parseFloat(inputs[1].value);
+                if (!isNaN(note) && !isNaN(weight) && weight > 0) {
+                    weightedSum += note * weight;
+                    totalWeight += weight;
+                    count++;
+                }
+            });
+
+            return { weightedSum, totalWeight, count };
+        }
+
+        function gradeColor(grade) {
+            if (grade >= 5.5) return 'var(--green)';
+            if (grade >= 4.5) return '#4ade80';
+            if (grade >= 4.0) return 'var(--orange)';
+            return 'var(--red)';
+        }
+
+        function gradeStatus(grade) {
+            if (grade >= 5.5) return '<span class="pass">Sehr gut ✓</span>';
+            if (grade >= 4.5) return '<span class="pass">Gut ✓</span>';
+            if (grade >= 4.0) return '<span class="warn">Genügend – knapp bestanden</span>';
+            return '<span class="fail">Ungenügend ✗</span>';
+        }
+
+        function showResult(boxId, valueId, barId, statusId, grade, statusHtml) {
+            const box = document.getElementById(boxId);
+            const val = document.getElementById(valueId);
+            const bar = document.getElementById(barId);
+            const status = document.getElementById(statusId);
+
+            const color = gradeColor(grade);
+            const pct = Math.min(Math.max((grade / 6) * 100, 0), 100);
+
+            val.textContent = grade.toFixed(2);
+            val.style.color = color;
+            bar.style.width = pct + '%';
+            bar.style.background = `linear-gradient(90deg, ${color}88, ${color})`;
+            status.innerHTML = statusHtml;
+
+            box.classList.add('visible');
+        }
+
+        function calculateAverage() {
+            const { weightedSum, totalWeight, count } = getGrades();
+            if (count === 0) return;
+
+            const avg = weightedSum / totalWeight;
+            showResult('avgResult', 'avgValue', 'avgBar', 'avgStatus', avg,
+                `Basierend auf ${count} Note${count !== 1 ? 'n' : ''} · ${gradeStatus(avg)}`
+            );
+            calculateCompensation();
+        }
+
+        function calculateCompensation() {
+            const rows = document.querySelectorAll('#gradeList .grade-row');
+            const grades = [];
+
+            rows.forEach((row, i) => {
+                const inputs = row.querySelectorAll('input');
+                const note = parseFloat(inputs[0].value);
+                const weight = parseFloat(inputs[1].value);
+                if (!isNaN(note) && !isNaN(weight) && weight > 0) {
+                    grades.push({ note, weight, index: i + 1 });
+                }
+            });
+
+            if (grades.length === 0) return;
+
+            let totalPlus = 0;
+            let totalMinus = 0;
+            const breakdown = [];
+
+            grades.forEach(g => {
+                // Halbnoten-Schritte: Abweichung von 4.0 in 0.5er-Schritten
+                const diff = g.note - 4.0;
+                const halfSteps = Math.round(diff / 0.5); // Anzahl Halbnotenschritte
+
+                if (halfSteps > 0) {
+                    // Pluspunkte (einfach)
+                    const pts = halfSteps * g.weight;
+                    totalPlus += pts;
+                    breakdown.push({
+                        note: g.note.toFixed(1),
+                        steps: halfSteps,
+                        weight: g.weight,
+                        pts: pts,
+                        type: 'plus',
+                        label: `+${pts % 1 === 0 ? pts.toFixed(0) : pts.toFixed(1)}`
+                    });
+                } else if (halfSteps < 0) {
+                    // Minuspunkte (doppelt gewichtet)
+                    const raw = Math.abs(halfSteps) * g.weight;
+                    const doubled = raw * 2;
+                    totalMinus += doubled;
+                    breakdown.push({
+                        note: g.note.toFixed(1),
+                        steps: halfSteps,
+                        weight: g.weight,
+                        pts: doubled,
+                        type: 'minus',
+                        label: `−${doubled % 1 === 0 ? doubled.toFixed(0) : doubled.toFixed(1)}`
+                    });
+                } else {
+                    breakdown.push({
+                        note: g.note.toFixed(1),
+                        steps: 0,
+                        weight: g.weight,
+                        pts: 0,
+                        type: 'neutral',
+                        label: '±0'
+                    });
+                }
+            });
+
+            const netto = totalPlus - totalMinus;
+
+            // Update meters
+            document.getElementById('compPlus').textContent = totalPlus % 1 === 0 ? totalPlus.toFixed(0) : totalPlus.toFixed(1);
+            document.getElementById('compMinus').textContent = totalMinus % 1 === 0 ? totalMinus.toFixed(0) : totalMinus.toFixed(1);
+            
+            const nettoEl = document.getElementById('compNetto');
+            const nettoMeter = document.getElementById('compNettoMeter');
+            const nettoStr = netto % 1 === 0 ? Math.abs(netto).toFixed(0) : Math.abs(netto).toFixed(1);
+            nettoEl.textContent = (netto >= 0 ? '+' : '−') + nettoStr;
+            
+            if (netto > 0) {
+                nettoEl.style.color = 'var(--green)';
+                nettoMeter.querySelector('.comp-meter-label').style.color = 'var(--green)';
+            } else if (netto < 0) {
+                nettoEl.style.color = 'var(--red)';
+                nettoMeter.querySelector('.comp-meter-label').style.color = 'var(--red)';
+            } else {
+                nettoEl.style.color = 'var(--t2)';
+                nettoMeter.querySelector('.comp-meter-label').style.color = 'var(--accent2)';
+            }
+
+            // Build breakdown rows
+            const bdEl = document.getElementById('compBreakdown');
+            bdEl.innerHTML = breakdown.map(b => {
+                const cls = b.type === 'plus' ? 'is-plus' : b.type === 'minus' ? 'is-minus' : 'is-neutral';
+                const detail = b.type === 'minus' 
+                    ? `${Math.abs(b.steps)}×0.5 × ${b.weight} × 2`
+                    : b.type === 'plus'
+                    ? `${b.steps}×0.5 × ${b.weight}`
+                    : 'genau 4.0';
+                return `<div class="comp-row ${cls}">
+                    <span class="comp-row-note">${b.note}</span>
+                    <span style="color:var(--t3);font-size:11px">${detail}</span>
+                    <span class="comp-row-pts">${b.label}</span>
+                </div>`;
+            }).join('');
+
+            // Verdict
+            const verdict = document.getElementById('compVerdict');
+            if (netto > 0) {
+                verdict.className = 'comp-verdict pass';
+                verdict.textContent = `✓ Kompensiert — ${nettoStr} Punkt${nettoStr !== '1' ? 'e' : ''} Überschuss`;
+            } else if (netto === 0) {
+                verdict.className = 'comp-verdict neutral';
+                verdict.textContent = '⚖ Genau ausgeglichen — kein Überschuss';
+            } else {
+                verdict.className = 'comp-verdict fail';
+                verdict.textContent = `✗ Nicht kompensiert — ${nettoStr} Punkt${nettoStr !== '1' ? 'e' : ''} fehlen`;
+            }
+
+            document.getElementById('compPanel').classList.add('visible');
+        }
+
+        function calculateNeededGrade() {
+            const desiredAvg = parseFloat(document.getElementById('desiredAverage').value);
+            const nextWeight = parseFloat(document.getElementById('nextWeight').value);
+            if (isNaN(desiredAvg) || isNaN(nextWeight) || nextWeight <= 0) return;
+
+            const { weightedSum, totalWeight } = getGrades();
+            const needed = ((desiredAvg * (totalWeight + nextWeight)) - weightedSum) / nextWeight;
+
+            let statusHtml;
+            if (needed > 6) {
+                statusHtml = '<span class="fail">Nicht erreichbar – Note müsste über 6.0 sein</span>';
+            } else if (needed < 1) {
+                statusHtml = '<span class="pass">Bereits erreicht – jede Note reicht</span>';
+            } else {
+                statusHtml = `Für Ø ${desiredAvg.toFixed(1)} · ${gradeStatus(needed)}`;
+            }
+
+            const display = Math.min(Math.max(needed, 1), 6);
+            showResult('neededResult', 'neededValue', 'neededBar', 'neededStatus', display, statusHtml);
+
+            if (needed > 6) {
+                document.getElementById('neededValue').textContent = needed.toFixed(2);
+                document.getElementById('neededValue').style.color = 'var(--red)';
+            }
+        }
+
+        function handleKey(e, input) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const allInputs = Array.from(document.querySelectorAll('#gradeList input[type="number"]'));
+                const idx = allInputs.indexOf(input);
+                if (idx === allInputs.length - 1) {
+                    addRow();
+                    setTimeout(() => {
+                        const updated = document.querySelectorAll('#gradeList input[type="number"]');
+                        updated[updated.length - 2]?.focus();
+                    }, 50);
+                } else {
+                    allInputs[idx + 1]?.focus();
+                }
+            }
+        }
+
+        // auto-calculate on any input change
+        document.addEventListener('input', (e) => {
+            if (e.target.closest('#gradeList')) {
+                const { count } = getGrades();
+                if (count > 0) calculateAverage();
+            }
+        });
+    </script>
+</body>
+</html>
