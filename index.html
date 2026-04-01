@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kinorama.dev – Minecraft Server</title>
+    <link rel="shortcut icon" href="http://example.com/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #09090b;
+            --bg2: #111113;
+            --bg3: #18181b;
+            --bg4: #222225;
+            --border: #27272a;
+            --border-hover: #3f3f46;
+            --t1: #fafafa;
+            --t2: #a1a1aa;
+            --t3: #52525b;
+            --accent: #ffffff;
+            --accent2: #d4d4d8;
+            --accent-glow: rgba(255, 255, 255, 0.06);
+            --green: #22c55e;
+            --green-dim: rgba(34, 197, 94, 0.1);
+            --red: #ef4444;
+            --red-dim: rgba(239, 68, 68, 0.1);
+            --orange: #f59e0b;
+            --orange-dim: rgba(245, 158, 11, 0.1);
+            --radius: 10px;
+            --radius-sm: 6px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Instrument Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--t1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%; left: -20%;
+            width: 80vw; height: 80vh;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.025) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%; right: -20%;
+            width: 70vw; height: 70vh;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.015) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            width: 100%; max-width: 700px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0;
+            background: rgba(9,9,11,0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px; font-weight: 700;
+            color: var(--t1); letter-spacing: 0.5px;
+            text-decoration: none; transition: color 0.2s;
+        }
+        .nav-brand:hover { color: var(--t2); }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px; font-weight: 500;
+            color: var(--t3); text-decoration: none;
+            padding: 6px 14px; border-radius: 6px;
+            border: 1px solid transparent;
+            transition: all 0.2s; cursor: pointer;
+        }
+        .nav-link:hover { color: var(--t1); background: var(--bg3); border-color: var(--border); }
+        .nav-link.active { color: var(--t1); background: var(--accent-glow); border-color: var(--border-hover); }
+
+        .hero {
+            position: relative; z-index: 1;
+            text-align: center; padding: 60px 0 36px;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; font-weight: 600;
+            color: var(--green); letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 6px 14px;
+            background: var(--green-dim);
+            border: 1px solid rgba(34,197,94,0.2);
+            border-radius: 99px; margin-bottom: 20px;
+        }
+        .hero-badge::before {
+            content: ''; width: 6px; height: 6px;
+            background: var(--green); border-radius: 50%;
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+        .hero h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 38px; font-weight: 800;
+            letter-spacing: -1px; color: var(--t1); line-height: 1.1;
+        }
+        .hero h1 span {
+            display: block; font-size: 16px; font-weight: 500;
+            color: var(--t3); letter-spacing: 0; margin-top: 12px;
+            font-family: 'Instrument Sans', sans-serif;
+        }
+
+        .card {
+            position: relative; z-index: 1; width: 100%; max-width: 700px;
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 14px; padding: 28px; margin-top: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: var(--border-hover); }
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; font-weight: 600; color: var(--t2);
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+        .card-title::before {
+            content: ''; display: inline-block; width: 8px; height: 8px;
+            border-radius: 2px; background: var(--t1);
+            box-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
+
+        .ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 520px) { .ip-grid { grid-template-columns: 1fr; } }
+
+        .ip-block {
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px; transition: all 0.2s;
+        }
+        .ip-block:hover { border-color: var(--border-hover); background: var(--bg4); }
+        .ip-label {
+            font-size: 11px; font-weight: 600; color: var(--t3);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+        }
+        .ip-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px; font-weight: 700; color: var(--t1);
+            word-break: break-all; user-select: all;
+        }
+        .ip-port {
+            font-size: 12px; color: var(--t3); margin-top: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .copy-btn {
+            margin-top: 10px; background: var(--bg4);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            color: var(--t2); font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; padding: 6px 12px; cursor: pointer; transition: all 0.2s;
+        }
+        .copy-btn:hover { background: var(--accent-glow); border-color: var(--border-hover); color: var(--t1); }
+
+        .actions-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        @media (max-width: 520px) { .actions-grid { grid-template-columns: 1fr; } }
+
+        .action-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            padding: 24px 16px; background: var(--bg3);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            text-decoration: none; color: var(--t1); transition: all 0.25s; cursor: pointer;
+        }
+        .action-btn:hover {
+            border-color: var(--border-hover); background: var(--bg4);
+            transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .action-icon { font-size: 28px; line-height: 1; }
+        .action-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--t2);
+        }
+        .action-btn.discord:hover { border-color: rgba(88,101,242,0.4); background: rgba(88,101,242,0.08); }
+        .action-btn.youtube:hover { border-color: rgba(255,0,0,0.3); background: rgba(255,0,0,0.06); }
+        .action-btn.modpack:hover { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.06); }
+
+        .rules-list { display: flex; flex-direction: column; gap: 0; }
+        .rule-item {
+            display: flex; align-items: flex-start; gap: 14px;
+            padding: 16px 0; border-bottom: 1px solid var(--border);
+        }
+        .rule-item:last-child { border-bottom: none; }
+        .rule-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px; font-weight: 700; color: var(--t3);
+            min-width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--bg4); border-radius: var(--radius-sm);
+            border: 1px solid var(--border); flex-shrink: 0;
+        }
+        .rule-text { font-size: 14px; color: var(--t2); line-height: 1.6; padding-top: 3px; }
+
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 520px) { .gallery-grid { grid-template-columns: 1fr; } }
+        .gallery-item {
+            aspect-ratio: 16/9; background: var(--bg3);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; position: relative;
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item:hover { border-color: var(--border-hover); transform: scale(1.02); }
+        .gallery-placeholder {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: var(--t3); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px;
+        }
+        .gallery-placeholder span { font-size: 24px; opacity: 0.4; }
+
+        footer {
+            position: relative; z-index: 1; width: 100%; max-width: 700px;
+            padding: 40px 0 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--t3); letter-spacing: 0.5px;
+            text-align: center; border-top: 1px solid var(--border); margin-top: 48px;
+        }
+
+        .fade-up {
+            opacity: 0; transform: translateY(16px);
+            animation: fadeUp 0.5s cubic-bezier(.4,0,.2,1) forwards;
+        }
+        .fade-up:nth-child(2) { animation-delay: 0.08s; }
+        .fade-up:nth-child(3) { animation-delay: 0.16s; }
+        .fade-up:nth-child(4) { animation-delay: 0.24s; }
+        .fade-up:nth-child(5) { animation-delay: 0.32s; }
+        .fade-up:nth-child(6) { animation-delay: 0.40s; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            .hero h1 { font-size: 26px; }
+            .ip-value { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-brand">kinorama.dev</a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link active">Server</a>
+            <a href="notenrechner.html" class="nav-link">Notenrechner</a>
+        </div>
+    </nav>
+
+    <div class="hero fade-up">
+        <div class="hero-badge">Server Online</div>
+        <h1>
+            Minecraft Server
+            <span>Joine jetzt und erlebe das Abenteuer</span>
+        </h1>
+    </div>
+
+    <!-- ── SERVER IPs ── -->
+    <div class="card fade-up">
+        <div class="card-title">Server Verbindung</div>
+        <div class="ip-grid">
+            <div class="ip-block">
+                <div class="ip-label">Java Edition</div>
+                <!-- JAVA IP HIER ÄNDERN -->
+                <div class="ip-value" id="java-ip">play.meinserver.de</div>
+                <button class="copy-btn" onclick="copyIP('java-ip')">Kopieren</button>
+            </div>
+            <div class="ip-block">
+                <div class="ip-label">Bedrock Edition</div>
+                <!-- BEDROCK IP + PORT HIER ÄNDERN -->
+                <div class="ip-value" id="bedrock-ip">bedrock.meinserver.de</div>
+                <div class="ip-port">Port: <span id="bedrock-port">19132</span></div>
+                <button class="copy-btn" onclick="copyIP('bedrock-ip')">Kopieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── LINKS & DOWNLOADS ── -->
+    <div class="card fade-up">
+        <div class="card-title">Links & Downloads</div>
+        <div class="actions-grid">
+            <!-- DISCORD LINK HIER ÄNDERN (href) -->
+            <a href="https://discord.gg/deinserver" target="_blank" class="action-btn discord">
+                <div class="action-icon">💬</div>
+                <div class="action-label">Discord</div>
+            </a>
+            <!-- YOUTUBE TUTORIAL LINK HIER ÄNDERN (href) -->
+            <a href="https://www.youtube.com/watch?v=DEIN_VIDEO" target="_blank" class="action-btn youtube">
+                <div class="action-icon">▶</div>
+                <div class="action-label">Tutorial</div>
+            </a>
+            <!-- MEDIAFIRE MODPACK LINK HIER ÄNDERN (href) -->
+            <a href="https://www.mediafire.com/file/DEIN_MODPACK" target="_blank" class="action-btn modpack">
+                <div class="action-icon">⬇</div>
+                <div class="action-label">Modpack</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- ── REGELN ── -->
+    <div class="card fade-up">
+        <div class="card-title">Serverregeln</div>
+        <div class="rules-list">
+            <!-- REGELN HIER ÄNDERN -->
+            <div class="rule-item">
+                <div class="rule-num">1</div>
+                <div class="rule-text">Kein Griefing – Zerstöre nicht die Bauwerke anderer Spieler.</div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-num">2</div>
+                <div class="rule-text">Respektvoller Umgang – Beleidigungen und Mobbing werden nicht toleriert.</div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-num">3</div>
+                <div class="rule-text">Keine Cheats oder Hacks – Wer cheatet, wird gebannt.</div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-num">4</div>
+                <div class="rule-text">Kein Spam im Chat – Halte den Chat sauber und übersichtlich.</div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-num">5</div>
+                <div class="rule-text">Habe Spass – Das Wichtigste ist, dass alle eine gute Zeit haben!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SCREENSHOTS ── -->
+    <div class="card fade-up">
+        <div class="card-title">Screenshots von der Welt</div>
+        <div class="gallery-grid">
+            <!-- BILDER HIER ÄNDERN – Ersetze gallery-placeholder mit: <img src="dein-bild.png" alt="Screenshot"> -->
+            <div class="gallery-item">
+                <div class="gallery-placeholder"><span>🏝</span>Insel Spawn</div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-placeholder"><span>🏰</span>Burg Nordseite</div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-placeholder"><span>🌅</span>Sonnenuntergang</div>
+            </div>
+            <div class="gallery-item">
+                <div class="gallery-placeholder"><span>⛏</span>Mineneingang</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2025 kinorama.dev</footer>
+
+    <script>
+        function copyIP(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById(id).parentElement.querySelector('.copy-btn');
+                btn.textContent = 'Kopiert ✓';
+                btn.style.color = 'var(--green)';
+                btn.style.borderColor = 'rgba(34,197,94,0.3)';
+                setTimeout(() => { btn.textContent = 'Kopieren'; btn.style.color = ''; btn.style.borderColor = ''; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
