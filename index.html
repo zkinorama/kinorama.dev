@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>kinorama.dev – Minecraft Server</title>
-    <link rel="shortcut icon" href="http://example.com/favicon.ico" />
+
+    <!-- Discord / Open Graph Embed -->
+    <meta property="og:title" content="Chezy Survival 2027 – Minecraft Server">
+    <meta property="og:description" content="Joine den Discord und whiteliste dich. Java Edition Survival Server mit Modpack.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinorama.dev">
+    <meta name="theme-color" content="#22c55e">
+
+    <link rel="shortcut icon" href="favicon.ico" />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,6 +36,8 @@
             --red-dim: rgba(239, 68, 68, 0.1);
             --orange: #f59e0b;
             --orange-dim: rgba(245, 158, 11, 0.1);
+            --blue: #3b82f6;
+            --blue-dim: rgba(59, 130, 246, 0.1);
             --radius: 10px;
             --radius-sm: 6px;
         }
@@ -144,8 +154,13 @@
             box-shadow: 0 0 8px rgba(255,255,255,0.3);
         }
 
-        .ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        @media (max-width: 520px) { .ip-grid { grid-template-columns: 1fr; } }
+        .ip-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: stretch;
+        }
+        @media (max-width: 520px) { .ip-section { grid-template-columns: 1fr; } }
 
         .ip-block {
             background: var(--bg3); border: 1px solid var(--border);
@@ -172,6 +187,40 @@
             font-size: 11px; padding: 6px 12px; cursor: pointer; transition: all 0.2s;
         }
         .copy-btn:hover { background: var(--accent-glow); border-color: var(--border-hover); color: var(--t1); }
+
+        .bluemap-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 10px; padding: 20px 28px;
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--radius); text-decoration: none;
+            color: var(--t1); transition: all 0.25s; cursor: pointer;
+            min-width: 140px;
+        }
+        .bluemap-btn:hover {
+            border-color: rgba(59,130,246,0.4); background: var(--blue-dim);
+            transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .bluemap-btn .action-icon { font-size: 28px; line-height: 1; }
+        .bluemap-btn .action-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--t2);
+        }
+
+        .info-box {
+            margin-top: 14px;
+            background: var(--bg3); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 18px 20px;
+        }
+        .info-box .info-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; font-weight: 600; color: var(--t3);
+            letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .info-box .info-text {
+            font-size: 14px; color: var(--t2); line-height: 1.7;
+        }
 
         .actions-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         @media (max-width: 520px) { .actions-grid { grid-template-columns: 1fr; } }
@@ -211,22 +260,6 @@
             border: 1px solid var(--border); flex-shrink: 0;
         }
         .rule-text { font-size: 14px; color: var(--t2); line-height: 1.6; padding-top: 3px; }
-
-        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        @media (max-width: 520px) { .gallery-grid { grid-template-columns: 1fr; } }
-        .gallery-item {
-            aspect-ratio: 16/9; background: var(--bg3);
-            border: 1px solid var(--border); border-radius: var(--radius);
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s; position: relative;
-        }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item:hover { border-color: var(--border-hover); transform: scale(1.02); }
-        .gallery-placeholder {
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-            color: var(--t3); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px;
-        }
-        .gallery-placeholder span { font-size: 24px; opacity: 0.4; }
 
         footer {
             position: relative; z-index: 1; width: 100%; max-width: 700px;
@@ -272,22 +305,28 @@
         </h1>
     </div>
 
-    <!-- ── SERVER IPs ── -->
+    <!-- ── SERVER IP + BLUEMAP ── -->
     <div class="card fade-up">
         <div class="card-title">Server Verbindung</div>
-        <div class="ip-grid">
+        <div class="ip-section">
             <div class="ip-block">
                 <div class="ip-label">Java Edition</div>
                 <!-- JAVA IP HIER ÄNDERN -->
                 <div class="ip-value" id="java-ip">203.16.163.195:27659</div>
                 <button class="copy-btn" onclick="copyIP('java-ip')">Kopieren</button>
             </div>
-            <div class="ip-block">
-                <div class="ip-label">Bedrock Edition</div>
-                <!-- BEDROCK IP + PORT HIER ÄNDERN -->
-                <div class="ip-value" id="bedrock-ip">NICHT VERFÜGBAR</div>
-                <div class="ip-port"><span id="bedrock-port">Kommt Bald!</span></div>
-                <button class="copy-btn" onclick="copyIP('bedrock-ip')">Kopieren</button>
+            <!-- BLUEMAP LINK HIER ÄNDERN (href) -->
+            <a href="http://203.16.163.195:8100" target="_blank" class="bluemap-btn">
+                <div class="action-icon">🗺</div>
+                <div class="action-label">BlueMap</div>
+            </a>
+        </div>
+
+        <!-- INFO TEXT HIER ÄNDERN -->
+        <div class="info-box">
+            <div class="info-label">ℹ Info</div>
+            <div class="info-text">
+                Hier kannst du Infos zum Server schreiben. Zum Beispiel Wartungszeiten, Updates, oder sonstige Ankündigungen.
             </div>
         </div>
     </div>
@@ -301,7 +340,7 @@
                 <div class="action-icon">💬</div>
                 <div class="action-label">Discord</div>
             </a>
-            <!-- YOUTUBE TUTORIAL LINK HIER ÄNDERN (href) -->
+            <!-- PRISM LAUNCHER LINK HIER ÄNDERN (href) -->
             <a href="https://prismlauncher.org/" target="_blank" class="action-btn youtube">
                 <div class="action-icon">▶</div>
                 <div class="action-label">Prism Launcher</div>
@@ -342,33 +381,7 @@
         </div>
     </div>
 
-    <!-- ── SCREENSHOTS ── -->
-<!-- BILDER HIER ÄNDERN -->
-<div class="gallery">
-
-  <div class="gallery-item">
-    <img src="https://imgur.com/xGi7OnN" alt="Insel Spawn">
-    <span>🏝️ Insel Spawn</span>
-  </div>
-
-  <div class="gallery-item">
-    <img src="https://imgur.com/sBMXKRJ" alt="Burg Nordseite">
-    <span>🏰 Burg Nordseite</span>
-  </div>
-
-  <div class="gallery-item">
-    <img src="https://imgur.com/9UkmGIt" alt="Ort 3">
-    <span>🏠 Ort 3</span>
-  </div>
-
-  <div class="gallery-item">
-    <img src="https://imgur.com/le5mREI" alt="Ort 4">
-    <span>🌄 Ort 4</span>
-  </div>
-
-</div>
-
-    <footer>&copy; 2025 kinorama.dev</footer>
+    <footer>&copy; 2026 kinorama.dev</footer>
 
     <script>
         function copyIP(id) {
