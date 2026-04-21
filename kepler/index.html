@@ -1,43 +1,68 @@
 <!DOCTYPE html>
 
-<html lang="de">
+<html lang="de" style="background:#0d0b08;color-scheme:dark;">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kepler — Die drei Gesetze der Planetenbewegung</title>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0d0b08">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<title>Kepler - Die drei Gesetze der Planetenbewegung</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+  /* Dark-Mode Enforcement - muss vor allem anderen stehen */
   :root {
-    --bg: #0d0b08;
-    --bg-deep: #07060a;
-    --panel: #151210;
-    --ink: #f4ead5;
-    --ink-dim: #c8b88a;
-    --ink-faint: #7a6f55;
-    --gold: #d4a84b;
-    --gold-bright: #f0c661;
-    --rust: #c2542a;
-    --blood: #8b2c1a;
-    --line: #3a3124;
-    --line-soft: #2a2319;
+    color-scheme: dark only;
   }
+
+html {
+background-color: #0d0b08 !important;
+min-height: 100%;
+}
+
+html, body {
+background-color: #0d0b08 !important;
+}
+
+:root {
+–bg: #0d0b08;
+–bg-deep: #07060a;
+–panel: #151210;
+–ink: #f4ead5;
+–ink-dim: #c8b88a;
+–ink-faint: #7a6f55;
+–gold: #d4a84b;
+–gold-bright: #f0c661;
+–rust: #c2542a;
+–blood: #8b2c1a;
+–line: #3a3124;
+–line-soft: #2a2319;
+}
 
 - { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
-background: var(–bg);
+background-color: #0d0b08;
 color: var(–ink);
 font-family: ‘Cormorant Garamond’, Georgia, serif;
 font-size: 19px;
 line-height: 1.65;
 overflow-x: hidden;
+min-height: 100vh;
 background-image:
 radial-gradient(circle at 20% 30%, rgba(212, 168, 75, 0.08) 0%, transparent 40%),
 radial-gradient(circle at 80% 70%, rgba(194, 84, 42, 0.06) 0%, transparent 45%);
+-webkit-font-smoothing: antialiased;
+}
+
+/* Reader-Mode blocken */
+@media (prefers-color-scheme: light) {
+html, body { background-color: #0d0b08 !important; color: #f4ead5 !important; }
 }
 
 /* Grain overlay */
@@ -63,7 +88,8 @@ padding: 18px 40px;
 display: flex;
 justify-content: space-between;
 align-items: center;
-background: linear-gradient(180deg, rgba(13, 11, 8, 0.95) 0%, rgba(13, 11, 8, 0.7) 70%, transparent 100%);
+background: linear-gradient(180deg, rgba(13, 11, 8, 0.95) 0%, rgba(13, 11, 8, 0.7) 70%, rgba(13, 11, 8, 0) 100%);
+-webkit-backdrop-filter: blur(8px);
 backdrop-filter: blur(8px);
 border-bottom: 1px solid transparent;
 transition: border-color 0.3s;
@@ -104,6 +130,13 @@ transition: width 0.3s;
 }
 .nav-links a:hover::after { width: 100%; }
 
+@media (max-width: 700px) {
+nav { padding: 14px 20px; }
+.nav-logo { font-size: 18px; }
+.nav-logo span { display: none; }
+.nav-links { gap: 14px; font-size: 10px; letter-spacing: 0.1em; }
+}
+
 /* HERO */
 .hero {
 min-height: 100vh;
@@ -113,6 +146,7 @@ justify-content: center;
 position: relative;
 padding: 100px 40px 60px;
 overflow: hidden;
+background-color: var(–bg);
 }
 
 .hero-bg {
@@ -156,6 +190,14 @@ margin-bottom: 20px;
 opacity: 0;
 animation: fadeUp 1s 0.2s forwards;
 }
+.hero-left p {
+color: var(–ink-dim);
+font-style: italic;
+font-size: 17px;
+opacity: 0;
+animation: fadeUp 1s 0.4s forwards;
+}
+.hero-left p em { color: var(–gold); font-style: italic; }
 .hero-dates {
 font-style: italic;
 color: var(–ink-faint);
@@ -165,7 +207,7 @@ opacity: 0;
 animation: fadeUp 1s 0.8s forwards;
 }
 .hero-dates::before, .hero-dates::after {
-content: “·”;
+content: “\00B7”;
 margin: 0 12px;
 }
 
@@ -208,7 +250,7 @@ opacity: 0;
 animation: fadeUp 1s 1s forwards;
 }
 .hero-right::before {
-content: “„”;
+content: “\201E”;
 font-size: 60px;
 color: var(–gold);
 line-height: 0;
@@ -242,6 +284,7 @@ letter-spacing: 0.3em;
 text-transform: uppercase;
 color: var(–ink-faint);
 animation: bounce 2s infinite;
+z-index: 2;
 }
 @keyframes bounce {
 0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -255,6 +298,7 @@ margin: 0 auto;
 padding: 120px 40px;
 text-align: center;
 position: relative;
+background-color: var(–bg);
 }
 .intro-label {
 font-family: ‘Inter’, sans-serif;
@@ -294,6 +338,7 @@ background: var(–gold);
 padding: 120px 40px;
 position: relative;
 border-top: 1px solid var(–line-soft);
+background-color: var(–bg);
 }
 .law-inner {
 max-width: 1300px;
@@ -329,6 +374,7 @@ color: var(–ink-faint);
 font-style: normal;
 letter-spacing: 0.3em;
 text-transform: uppercase;
+white-space: nowrap;
 }
 .law-title-block {
 padding-top: 20px;
@@ -369,9 +415,13 @@ margin-bottom: 80px;
 .explain { grid-template-columns: 1fr; gap: 50px; }
 .law-header { grid-template-columns: 1fr; gap: 20px; }
 .law-number { font-size: 120px; }
+.law-title { font-size: 38px; }
 .hero-content { grid-template-columns: 1fr; }
-.hero-left, .hero-right { text-align: center; }
+.hero-left, .hero-right { text-align: center; margin: 0 auto; }
 .hero-title { font-size: 80px; }
+.law { padding: 80px 24px; }
+.intro { padding: 80px 24px; }
+.intro p { font-size: 20px; }
 }
 
 .explain-text h3 {
@@ -445,7 +495,7 @@ font-weight: 500;
 margin-right: 8px;
 }
 
-/* Interactive canvas area */
+/* Interactive */
 .interactive {
 background: var(–bg-deep);
 border: 1px solid var(–line);
@@ -471,6 +521,7 @@ width: 100%;
 height: auto;
 background: #050407;
 border: 1px solid var(–line-soft);
+touch-action: manipulation;
 }
 
 .controls {
@@ -486,6 +537,9 @@ gap: 16px;
 align-items: center;
 font-family: ‘JetBrains Mono’, monospace;
 font-size: 12px;
+}
+@media (max-width: 500px) {
+.control-row { grid-template-columns: 100px 1fr 55px; gap: 10px; }
 }
 .control-row label {
 color: var(–ink-dim);
@@ -509,8 +563,8 @@ cursor: pointer;
 input[type=“range”]::-webkit-slider-thumb {
 -webkit-appearance: none;
 appearance: none;
-width: 14px;
-height: 14px;
+width: 16px;
+height: 16px;
 background: var(–gold);
 border-radius: 50%;
 cursor: pointer;
@@ -518,8 +572,8 @@ transition: transform 0.15s;
 }
 input[type=“range”]::-webkit-slider-thumb:hover { transform: scale(1.3); background: var(–gold-bright); }
 input[type=“range”]::-moz-range-thumb {
-width: 14px;
-height: 14px;
+width: 16px;
+height: 16px;
 background: var(–gold);
 border-radius: 50%;
 cursor: pointer;
@@ -528,6 +582,7 @@ border: none;
 
 .btn-row {
 display: flex;
+flex-wrap: wrap;
 gap: 10px;
 margin-top: 10px;
 }
@@ -553,7 +608,7 @@ background: var(–gold);
 border-color: var(–gold);
 }
 
-/* Key insight box */
+/* Insight */
 .insight {
 background: linear-gradient(135deg, rgba(212, 168, 75, 0.08) 0%, rgba(194, 84, 42, 0.05) 100%);
 border-left: 3px solid var(–gold);
@@ -576,7 +631,7 @@ margin-bottom: 12px;
 font-style: normal;
 }
 
-/* Data display */
+/* Data grid */
 .data-grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -608,13 +663,17 @@ color: var(–ink-faint);
 margin-left: 4px;
 }
 
-/* Planet table */
+/* Table */
+.planet-table-wrap {
+overflow-x: auto;
+margin: 30px 0;
+}
 .planet-table {
 width: 100%;
 border-collapse: collapse;
-margin: 30px 0;
 font-family: ‘JetBrains Mono’, monospace;
 font-size: 13px;
+min-width: 420px;
 }
 .planet-table th {
 text-align: left;
@@ -650,6 +709,7 @@ padding: 120px 40px;
 max-width: 1100px;
 margin: 0 auto;
 border-top: 1px solid var(–line-soft);
+background-color: var(–bg);
 }
 .summary-title {
 text-align: center;
@@ -672,7 +732,11 @@ display: grid;
 grid-template-columns: repeat(3, 1fr);
 gap: 30px;
 }
-@media (max-width: 800px) { .summary-cards { grid-template-columns: 1fr; } }
+@media (max-width: 800px) {
+.summary-cards { grid-template-columns: 1fr; }
+.summary-title h2 { font-size: 38px; }
+.summary { padding: 80px 24px; }
+}
 .summary-card {
 background: var(–panel);
 border: 1px solid var(–line);
@@ -718,7 +782,9 @@ text-align: center;
 padding: 80px 40px 120px;
 max-width: 900px;
 margin: 0 auto;
+background-color: var(–bg);
 }
+@media (max-width: 700px) { .quiz { padding: 60px 24px 80px; } }
 .quiz-header {
 text-align: center;
 margin-bottom: 60px;
@@ -734,6 +800,7 @@ border: 1px solid var(–line);
 padding: 30px 36px;
 margin-bottom: 24px;
 }
+@media (max-width: 500px) { .quiz-q { padding: 24px 20px; } }
 .quiz-q-label {
 font-family: ‘Inter’, sans-serif;
 font-size: 10px;
@@ -763,8 +830,9 @@ font-size: 18px;
 text-align: left;
 cursor: pointer;
 transition: all 0.2s;
+width: 100%;
 }
-.quiz-opt:hover {
+.quiz-opt:hover:not(:disabled) {
 border-color: var(–gold);
 color: var(–ink);
 }
@@ -797,6 +865,7 @@ text-align: center;
 color: var(–ink-faint);
 font-style: italic;
 font-size: 15px;
+background-color: var(–bg);
 }
 footer .sig {
 font-family: ‘Cormorant Garamond’, serif;
@@ -821,11 +890,11 @@ line-height: 1.5;
 <body>
 
 <nav id="nav">
-  <div class="nav-logo">Keplerʼs Gesetze <span>— Lernmodul</span></div>
+  <div class="nav-logo">Kepler's Gesetze <span>- Lernmodul</span></div>
   <div class="nav-links">
-    <a href="#law1">I · Ellipsen</a>
-    <a href="#law2">II · Flächen</a>
-    <a href="#law3">III · Perioden</a>
+    <a href="#law1">I - Ellipsen</a>
+    <a href="#law2">II - Flaechen</a>
+    <a href="#law3">III - Perioden</a>
     <a href="#quiz">Quiz</a>
   </div>
 </nav>
@@ -836,14 +905,14 @@ line-height: 1.5;
   <div class="hero-bg" id="starfield"></div>
   <div class="hero-content">
     <div class="hero-left">
-      <div class="hero-kicker">Astronomia Nova · 1609</div>
-      <p style="color: var(--ink-dim); font-style: italic; font-size: 17px;">
+      <div class="hero-kicker">Astronomia Nova &middot; 1609</div>
+      <p>
         Bevor Newton die Gravitation formulierte,<br>
         beschrieb ein deutscher Mathematiker<br>
-        die <em style="color: var(--gold);">Bewegung der Himmel</em> —<br>
+        die <em>Bewegung der Himmel</em> -<br>
         nur mit Geometrie und Geduld.
       </p>
-      <div class="hero-dates">Johannes Kepler · 1571 — 1630</div>
+      <div class="hero-dates">Johannes Kepler &middot; 1571 - 1630</div>
     </div>
 
 ```
@@ -853,13 +922,13 @@ line-height: 1.5;
 </div>
 
 <div class="hero-right">
-  Geometrie ist ein einziges, ewiges Aufleuchten im Geist Gottes. Dass die Menschen daran teilhaben dürfen, ist eine der Ursachen, weshalb der Mensch das Ebenbild Gottes ist.
-  <cite>— Johannes Kepler, Harmonice Mundi</cite>
+  Geometrie ist ein einziges, ewiges Aufleuchten im Geist Gottes. Dass die Menschen daran teilhaben duerfen, ist eine der Ursachen, weshalb der Mensch das Ebenbild Gottes ist.
+  <cite>- Johannes Kepler, Harmonice Mundi</cite>
 </div>
 ```
 
   </div>
-  <div class="scroll-indicator">Scrollen · Erkunden</div>
+  <div class="scroll-indicator">Scrollen &middot; Erkunden</div>
 </section>
 
 <!-- INTRO -->
@@ -867,7 +936,7 @@ line-height: 1.5;
 <section class="intro">
   <div class="intro-label">Worum es geht</div>
   <p>
-    Drei Gesetze, die das Universum <em>lesbar</em> machten. Kepler fand sie in den Daten von Tycho Brahe — Jahre bevor jemand wusste, <em>warum</em> sie gelten. Auf dieser Seite lernst du nicht nur die Formeln, sondern verstehst, <em>was sie wirklich bewirken</em>. Alles interaktiv, alles auf Gymnasialniveau.
+    Drei Gesetze, die das Universum <em>lesbar</em> machten. Kepler fand sie in den Daten von Tycho Brahe - Jahre bevor jemand wusste, <em>warum</em> sie gelten. Auf dieser Seite lernst du nicht nur die Formeln, sondern verstehst, <em>was sie wirklich bewirken</em>. Alles interaktiv, alles auf Gymnasialniveau.
   </p>
   <div class="ornament"></div>
 </section>
@@ -888,38 +957,38 @@ line-height: 1.5;
 ```
 <div class="explain">
   <div class="explain-text">
-    <h3>Was heißt das?</h3>
-    <p>Vor Kepler dachte man: Himmelskörper sind göttlich, also müssen ihre Bahnen <strong>perfekte Kreise</strong> sein. Kepler zeigte: Das stimmt nicht. Planetenbahnen sind <strong>Ellipsen</strong> — leicht gedehnte Kreise mit zwei besonderen Punkten, den Brennpunkten.</p>
-    <p>In einem der beiden Brennpunkte sitzt die <strong>Sonne</strong>. Der andere Brennpunkt ist leer. Das klingt banal, war aber revolutionär: Es bedeutet, dass ein Planet der Sonne mal näher, mal weiter weg ist.</p>
+    <h3>Was heisst das?</h3>
+    <p>Vor Kepler dachte man: Himmelskoerper sind goettlich, also muessen ihre Bahnen <strong>perfekte Kreise</strong> sein. Kepler zeigte: Das stimmt nicht. Planetenbahnen sind <strong>Ellipsen</strong> - leicht gedehnte Kreise mit zwei besonderen Punkten, den Brennpunkten.</p>
+    <p>In einem der beiden Brennpunkte sitzt die <strong>Sonne</strong>. Der andere Brennpunkt ist leer. Das klingt banal, war aber revolutionaer: Es bedeutet, dass ein Planet der Sonne mal naeher, mal weiter weg ist.</p>
 
-    <h3>Zwei Schlüsselbegriffe</h3>
-    <p><strong>Perihel</strong> — der sonnennächste Punkt der Bahn.<br><strong>Aphel</strong> — der sonnenfernste Punkt.</p>
-    <p>Wie stark eine Ellipse von einem Kreis abweicht, beschreibt die <strong>numerische Exzentrizität</strong> e. Bei e = 0 ist die Bahn ein perfekter Kreis. Je näher e an 1 rückt, desto langgestreckter wird die Ellipse.</p>
+    <h3>Zwei Schluesselbegriffe</h3>
+    <p><strong>Perihel</strong> - der sonnennaechste Punkt der Bahn.<br><strong>Aphel</strong> - der sonnenfernste Punkt.</p>
+    <p>Wie stark eine Ellipse von einem Kreis abweicht, beschreibt die <strong>numerische Exzentrizitaet</strong> e. Bei e = 0 ist die Bahn ein perfekter Kreis. Je naeher e an 1 rueckt, desto langgestreckter wird die Ellipse.</p>
 
     <div class="formula-box">
       <div class="formula">e = <span class="formula-symbol">c</span> / <span class="formula-symbol">a</span></div>
       <div class="formula-legend">
-        <div><b>e</b> Exzentrizität (0 bis &lt;1)</div>
-        <div><b>a</b> große Halbachse</div>
-        <div><b>c</b> Abstand Mittelpunkt – Brennpunkt</div>
+        <div><b>e</b> Exzentrizitaet (0 bis &lt;1)</div>
+        <div><b>a</b> grosse Halbachse</div>
+        <div><b>c</b> Abstand Mittelpunkt - Brennpunkt</div>
         <div><b>b</b> kleine Halbachse</div>
       </div>
     </div>
 
     <div class="insight">
-      Eine Ellipse ist der geometrische Ort aller Punkte, für die die <em>Summe der Abstände</em> zu den beiden Brennpunkten konstant ist. Diese Summe ist immer 2a.
+      Eine Ellipse ist der geometrische Ort aller Punkte, fuer die die <em>Summe der Abstaende</em> zu den beiden Brennpunkten konstant ist. Diese Summe ist immer 2a.
     </div>
 
     <h3>Was bewirkt die Formel?</h3>
-    <p>Die Exzentrizität <strong>e</strong> sagt dir sofort, wie „kreisförmig" eine Bahn ist. Erde: e ≈ 0,017 — praktisch ein Kreis. Merkur: e ≈ 0,206 — deutlich elliptisch. Halleyscher Komet: e ≈ 0,967 — extrem langgestreckt.</p>
-    <p>Die große Halbachse <strong>a</strong> ist der <em>mittlere</em> Abstand zur Sonne. Sie ist die wichtigste Größe eines Planeten — sie bestimmt auch seine Umlaufzeit (siehe 3. Gesetz).</p>
+    <p>Die Exzentrizitaet <strong>e</strong> sagt dir sofort, wie "kreisfoermig" eine Bahn ist. Erde: e &asymp; 0,017 - praktisch ein Kreis. Merkur: e &asymp; 0,206 - deutlich elliptisch. Halleyscher Komet: e &asymp; 0,967 - extrem langgestreckt.</p>
+    <p>Die grosse Halbachse <strong>a</strong> ist der <em>mittlere</em> Abstand zur Sonne. Sie ist die wichtigste Groesse eines Planeten - sie bestimmt auch seine Umlaufzeit (siehe 3. Gesetz).</p>
   </div>
 
   <div class="interactive">
     <canvas id="canvas1" width="520" height="420"></canvas>
     <div class="controls">
       <div class="control-row">
-        <label>Exzentrizität e</label>
+        <label>Exzentrizitaet e</label>
         <input type="range" id="ecc1" min="0" max="0.85" step="0.01" value="0.5">
         <span class="value" id="ecc1val">0.50</span>
       </div>
@@ -930,9 +999,9 @@ line-height: 1.5;
       </div>
       <div class="btn-row">
         <button class="btn" id="play1">Animation</button>
-        <button class="btn" id="reset1">Zurück</button>
+        <button class="btn" id="reset1">Zurueck</button>
       </div>
-      <div class="note">Gelb = Sonne (Brennpunkt 1) · Grau = leerer Brennpunkt 2 · Weiß = Planet. Die gestrichelte Linie zeigt: Abstand zu F1 + Abstand zu F2 = 2a (konstant).</div>
+      <div class="note">Gelb = Sonne (Brennpunkt 1) &middot; Grau = leerer Brennpunkt 2 &middot; Weiss = Planet. Die gestrichelte Linie zeigt: Abstand zu F1 + Abstand zu F2 = 2a (konstant).</div>
     </div>
   </div>
 </div>
@@ -949,37 +1018,37 @@ line-height: 1.5;
       <div class="law-number" data-roman="Secundum Lex">2</div>
       <div class="law-title-block">
         <div class="law-kicker">Zweites Keplersches Gesetz</div>
-        <h2 class="law-title">Der <em>Flächensatz</em></h2>
-        <p class="law-lead">Die Verbindungslinie Sonne–Planet überstreicht in gleichen Zeiten gleich große Flächen.</p>
+        <h2 class="law-title">Der <em>Flaechensatz</em></h2>
+        <p class="law-lead">Die Verbindungslinie Sonne-Planet ueberstreicht in gleichen Zeiten gleich grosse Flaechen.</p>
       </div>
     </div>
 
 ```
 <div class="explain">
   <div class="explain-text">
-    <h3>Was heißt das?</h3>
-    <p>Stell dir eine gedachte Linie zwischen Sonne und Planet vor — den sogenannten <strong>Fahrstrahl</strong>. Während der Planet fliegt, „fegt" dieser Fahrstrahl eine Fläche aus.</p>
-    <p>Kepler entdeckte: In <strong>gleichen Zeitintervallen</strong> — egal wo auf der Bahn — ist diese Fläche immer <strong>gleich groß</strong>. Ein Monat im Perihel „überstreicht" genauso viel Fläche wie ein Monat im Aphel.</p>
+    <h3>Was heisst das?</h3>
+    <p>Stell dir eine gedachte Linie zwischen Sonne und Planet vor - den sogenannten <strong>Fahrstrahl</strong>. Waehrend der Planet fliegt, "fegt" dieser Fahrstrahl eine Flaeche aus.</p>
+    <p>Kepler entdeckte: In <strong>gleichen Zeitintervallen</strong> - egal wo auf der Bahn - ist diese Flaeche immer <strong>gleich gross</strong>. Ein Monat im Perihel "ueberstreicht" genauso viel Flaeche wie ein Monat im Aphel.</p>
 
     <h3>Die physikalische Konsequenz</h3>
-    <p>Weil die Ellipse im Perihel „schmal und lang" ist, muss der Planet dort <strong>schneller</strong> fliegen, um in der gleichen Zeit die gleiche Fläche zu überstreichen. Im Aphel ist die Ellipse „breit und kurz" — der Planet kann <strong>langsamer</strong> werden.</p>
+    <p>Weil die Ellipse im Perihel "schmal und lang" ist, muss der Planet dort <strong>schneller</strong> fliegen, um in der gleichen Zeit die gleiche Flaeche zu ueberstreichen. Im Aphel ist die Ellipse "breit und kurz" - der Planet kann <strong>langsamer</strong> werden.</p>
 
     <div class="formula-box">
       <div class="formula">dA / dt = <span class="formula-symbol">konstant</span></div>
       <div class="formula-legend">
-        <div><b>A</b> überstrichene Fläche</div>
+        <div><b>A</b> ueberstrichene Flaeche</div>
         <div><b>t</b> Zeit</div>
-        <div><b>dA/dt</b> Flächengeschwindigkeit</div>
-        <div><b>→</b> gleich für alle Bahnpunkte</div>
+        <div><b>dA/dt</b> Flaechengeschwindigkeit</div>
+        <div><b>&rarr;</b> gleich fuer alle Bahnpunkte</div>
       </div>
     </div>
 
     <div class="insight">
-      Was hier in Wahrheit konstant bleibt, ist der <em>Drehimpuls</em> des Planeten. Kepler wusste das noch nicht — Newton zeigte es später. Der Flächensatz ist im Kern ein Erhaltungssatz.
+      Was hier in Wahrheit konstant bleibt, ist der <em>Drehimpuls</em> des Planeten. Kepler wusste das noch nicht - Newton zeigte es spaeter. Der Flaechensatz ist im Kern ein Erhaltungssatz.
     </div>
 
     <h3>Was bewirkt die Formel?</h3>
-    <p>Sie verbietet konstante Geschwindigkeit. Ein Planet auf einer elliptischen Bahn <strong>muss</strong> sich wechselnd schnell bewegen. Die Erde ist im Januar im Perihel und fliegt dann mit ≈ 30,29 km/s. Im Juli im Aphel sind es nur ≈ 29,29 km/s — ein ganzer Kilometer pro Sekunde Unterschied.</p>
+    <p>Sie verbietet konstante Geschwindigkeit. Ein Planet auf einer elliptischen Bahn <strong>muss</strong> sich wechselnd schnell bewegen. Die Erde ist im Januar im Perihel und fliegt dann mit &asymp; 30,29 km/s. Im Juli im Aphel sind es nur &asymp; 29,29 km/s - ein ganzer Kilometer pro Sekunde Unterschied.</p>
     <p>Faustregel: <strong>Nah an der Sonne = schnell. Fern von der Sonne = langsam.</strong></p>
   </div>
 
@@ -993,19 +1062,19 @@ line-height: 1.5;
       </div>
       <div class="btn-row">
         <button class="btn active" id="play2">Pause</button>
-        <button class="btn" id="clear2">Flächen löschen</button>
-        <button class="btn" id="sweep2">Fläche markieren</button>
+        <button class="btn" id="clear2">Flaechen loeschen</button>
+        <button class="btn" id="sweep2">Flaeche markieren</button>
       </div>
-      <div class="note">Drücke „Fläche markieren" während der Animation. Die rostrote Fläche wird über ein festes Zeitintervall gezeichnet. Vergleiche die Flächen an verschiedenen Bahnpunkten — sie sind gleich groß, obwohl der Planet unterschiedlich schnell ist.</div>
+      <div class="note">Druecke "Flaeche markieren" waehrend der Animation. Die rostrote Flaeche wird ueber ein festes Zeitintervall gezeichnet. Vergleiche die Flaechen an verschiedenen Bahnpunkten - sie sind gleich gross, obwohl der Planet unterschiedlich schnell ist.</div>
 
       <div class="data-grid">
         <div class="data-cell">
           <div class="data-cell-label">Momentangeschwindigkeit</div>
-          <div class="data-cell-value" id="vNow">—<span class="data-cell-unit">rel.</span></div>
+          <div class="data-cell-value" id="vNow">-<span class="data-cell-unit">rel.</span></div>
         </div>
         <div class="data-cell">
           <div class="data-cell-label">Abstand zur Sonne</div>
-          <div class="data-cell-value" id="rNow">—<span class="data-cell-unit">rel.</span></div>
+          <div class="data-cell-value" id="rNow">-<span class="data-cell-unit">rel.</span></div>
         </div>
       </div>
     </div>
@@ -1025,38 +1094,38 @@ line-height: 1.5;
       <div class="law-title-block">
         <div class="law-kicker">Drittes Keplersches Gesetz</div>
         <h2 class="law-title">Das <em>Harmoniegesetz</em></h2>
-        <p class="law-lead">Die Quadrate der Umlaufzeiten verhalten sich wie die Kuben der großen Halbachsen.</p>
+        <p class="law-lead">Die Quadrate der Umlaufzeiten verhalten sich wie die Kuben der grossen Halbachsen.</p>
       </div>
     </div>
 
 ```
 <div class="explain">
   <div class="explain-text">
-    <h3>Was heißt das?</h3>
-    <p>Das erste Gesetz beschreibt <em>die Form</em> einer Bahn. Das zweite beschreibt <em>das Tempo</em> entlang dieser Bahn. Das dritte verknüpft zum ersten Mal <strong>verschiedene Planeten miteinander</strong>: Es zeigt, wie Bahngröße und Umlaufzeit zusammenhängen.</p>
-    <p>Wenn ein Planet doppelt so weit von der Sonne entfernt ist wie ein anderer, braucht er nicht doppelt, sondern etwa <strong>2,83-mal</strong> so lange für einen Umlauf. Warum? Weil T² ∝ a³.</p>
+    <h3>Was heisst das?</h3>
+    <p>Das erste Gesetz beschreibt <em>die Form</em> einer Bahn. Das zweite beschreibt <em>das Tempo</em> entlang dieser Bahn. Das dritte verknuepft zum ersten Mal <strong>verschiedene Planeten miteinander</strong>: Es zeigt, wie Bahngroesse und Umlaufzeit zusammenhaengen.</p>
+    <p>Wenn ein Planet doppelt so weit von der Sonne entfernt ist wie ein anderer, braucht er nicht doppelt, sondern etwa <strong>2,83-mal</strong> so lange fuer einen Umlauf. Warum? Weil T&sup2; &prop; a&sup3;.</p>
 
     <div class="formula-box">
-      <div class="formula"><span class="formula-symbol">T</span>² / <span class="formula-symbol">a</span>³ = konstant</div>
+      <div class="formula"><span class="formula-symbol">T</span>&sup2; / <span class="formula-symbol">a</span>&sup3; = konstant</div>
       <div class="formula-legend">
         <div><b>T</b> Umlaufzeit</div>
-        <div><b>a</b> große Halbachse</div>
-        <div><b>=</b> für alle Planeten gleich</div>
-        <div><b>Sonnensystem:</b> ≈ 1 (in AE, Jahren)</div>
+        <div><b>a</b> grosse Halbachse</div>
+        <div><b>=</b> fuer alle Planeten gleich</div>
+        <div><b>Sonnensystem:</b> &asymp; 1 (in AE, Jahren)</div>
       </div>
     </div>
 
     <h3>Der Trick mit den Einheiten</h3>
-    <p>Misst man <strong>a in Astronomischen Einheiten</strong> (1 AE = Erdbahnradius) und <strong>T in Jahren</strong>, dann ist die Konstante für unser Sonnensystem <strong>genau 1</strong>. Das macht Rechnungen elegant:</p>
-    <p style="text-align:center; font-style:italic; font-size:26px; color: var(--gold-bright); margin: 20px 0;">T² = a³</p>
-    <p>Beispiel Jupiter: a ≈ 5,20 AE. Dann T² = 5,20³ ≈ 140,6. Also T ≈ √140,6 ≈ 11,86 Jahre. Richtig.</p>
+    <p>Misst man <strong>a in Astronomischen Einheiten</strong> (1 AE = Erdbahnradius) und <strong>T in Jahren</strong>, dann ist die Konstante fuer unser Sonnensystem <strong>genau 1</strong>. Das macht Rechnungen elegant:</p>
+    <p style="text-align:center; font-style:italic; font-size:26px; color: var(--gold-bright); margin: 20px 0;">T&sup2; = a&sup3;</p>
+    <p>Beispiel Jupiter: a &asymp; 5,20 AE. Dann T&sup2; = 5,20&sup3; &asymp; 140,6. Also T &asymp; &radic;140,6 &asymp; 11,86 Jahre. Richtig.</p>
 
     <div class="insight">
-      Das 3. Gesetz war der Schlüssel zur Gravitationstheorie. Newton zeigte später: Wenn man T² ∝ a³ und die Zentripetalkraft kombiniert, folgt das <em>Gravitationsgesetz</em> F = G·M·m / r² automatisch. Kepler lieferte das Rätsel — Newton die Lösung.</p>
+      Das 3. Gesetz war der Schluessel zur Gravitationstheorie. Newton zeigte spaeter: Wenn man T&sup2; &prop; a&sup3; und die Zentripetalkraft kombiniert, folgt das <em>Gravitationsgesetz</em> F = G&middot;M&middot;m / r&sup2; automatisch. Kepler lieferte das Raetsel - Newton die Loesung.
     </div>
 
     <h3>Daten aus unserem Sonnensystem</h3>
-    <p>Die beste Art, das Gesetz zu verstehen: Rechne T²/a³ für jeden Planeten aus. Das Ergebnis ist immer ≈ 1. Probiere es selbst mit dem Rechner rechts.</p>
+    <p>Die beste Art, das Gesetz zu verstehen: Rechne T&sup2;/a&sup3; fuer jeden Planeten aus. Das Ergebnis ist immer &asymp; 1. Probiere es selbst mit dem Rechner rechts.</p>
   </div>
 
   <div class="interactive">
@@ -1074,26 +1143,28 @@ line-height: 1.5;
           <div class="data-cell-value" id="t3">1.00<span class="data-cell-unit">Jahre</span></div>
         </div>
         <div class="data-cell">
-          <div class="data-cell-label">T² / a³</div>
-          <div class="data-cell-value" id="ratio3">1.00<span class="data-cell-unit">AE³/J²</span></div>
+          <div class="data-cell-label">T&sup2; / a&sup3;</div>
+          <div class="data-cell-value" id="ratio3">1.00<span class="data-cell-unit">AE&sup3;/J&sup2;</span></div>
         </div>
       </div>
 
-      <table class="planet-table">
-        <thead>
-          <tr><th>Planet</th><th>a (AE)</th><th>T (Jahre)</th><th>T² / a³</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="planet-name">Merkur</td><td>0.387</td><td>0.241</td><td class="highlight">1.002</td></tr>
-          <tr><td class="planet-name">Venus</td><td>0.723</td><td>0.615</td><td class="highlight">1.001</td></tr>
-          <tr><td class="planet-name">Erde</td><td>1.000</td><td>1.000</td><td class="highlight">1.000</td></tr>
-          <tr><td class="planet-name">Mars</td><td>1.524</td><td>1.881</td><td class="highlight">0.999</td></tr>
-          <tr><td class="planet-name">Jupiter</td><td>5.203</td><td>11.862</td><td class="highlight">0.999</td></tr>
-          <tr><td class="planet-name">Saturn</td><td>9.537</td><td>29.457</td><td class="highlight">1.000</td></tr>
-          <tr><td class="planet-name">Uranus</td><td>19.191</td><td>84.011</td><td class="highlight">0.999</td></tr>
-          <tr><td class="planet-name">Neptun</td><td>30.069</td><td>164.79</td><td class="highlight">0.999</td></tr>
-        </tbody>
-      </table>
+      <div class="planet-table-wrap">
+        <table class="planet-table">
+          <thead>
+            <tr><th>Planet</th><th>a (AE)</th><th>T (Jahre)</th><th>T&sup2; / a&sup3;</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="planet-name">Merkur</td><td>0.387</td><td>0.241</td><td class="highlight">1.002</td></tr>
+            <tr><td class="planet-name">Venus</td><td>0.723</td><td>0.615</td><td class="highlight">1.001</td></tr>
+            <tr><td class="planet-name">Erde</td><td>1.000</td><td>1.000</td><td class="highlight">1.000</td></tr>
+            <tr><td class="planet-name">Mars</td><td>1.524</td><td>1.881</td><td class="highlight">0.999</td></tr>
+            <tr><td class="planet-name">Jupiter</td><td>5.203</td><td>11.862</td><td class="highlight">0.999</td></tr>
+            <tr><td class="planet-name">Saturn</td><td>9.537</td><td>29.457</td><td class="highlight">1.000</td></tr>
+            <tr><td class="planet-name">Uranus</td><td>19.191</td><td>84.011</td><td class="highlight">0.999</td></tr>
+            <tr><td class="planet-name">Neptun</td><td>30.069</td><td>164.79</td><td class="highlight">0.999</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -1107,26 +1178,26 @@ line-height: 1.5;
 <section class="summary">
   <div class="summary-title">
     <h2>Die drei Gesetze <em>auf einen Blick</em></h2>
-    <p>Was du dir merken solltest — und nie wieder vergisst.</p>
+    <p>Was du dir merken solltest - und nie wieder vergisst.</p>
   </div>
   <div class="summary-cards">
     <div class="summary-card">
       <div class="summary-card-num">I</div>
       <h3>Form</h3>
-      <p>Planetenbahnen sind Ellipsen. Die Sonne sitzt in einem der beiden Brennpunkte. Die Exzentrizität e sagt, wie stark gedehnt die Ellipse ist.</p>
+      <p>Planetenbahnen sind Ellipsen. Die Sonne sitzt in einem der beiden Brennpunkte. Die Exzentrizitaet e sagt, wie stark gedehnt die Ellipse ist.</p>
       <div class="mini-formula">e = c / a</div>
     </div>
     <div class="summary-card">
       <div class="summary-card-num">II</div>
       <h3>Tempo</h3>
-      <p>Der Fahrstrahl überstreicht in gleichen Zeiten gleich große Flächen. Nah an der Sonne schnell, fern von der Sonne langsam.</p>
+      <p>Der Fahrstrahl ueberstreicht in gleichen Zeiten gleich grosse Flaechen. Nah an der Sonne schnell, fern von der Sonne langsam.</p>
       <div class="mini-formula">dA/dt = const.</div>
     </div>
     <div class="summary-card">
       <div class="summary-card-num">III</div>
       <h3>Beziehung</h3>
-      <p>Größere Bahnen brauchen überproportional länger: Das Verhältnis T²/a³ ist für alle Planeten eines Zentralsterns gleich.</p>
-      <div class="mini-formula">T² / a³ = const.</div>
+      <p>Groessere Bahnen brauchen ueberproportional laenger: Das Verhaeltnis T&sup2;/a&sup3; ist fuer alle Planeten eines Zentralsterns gleich.</p>
+      <div class="mini-formula">T&sup2; / a&sup3; = const.</div>
     </div>
   </div>
 </section>
@@ -1135,67 +1206,67 @@ line-height: 1.5;
 
 <section class="quiz" id="quiz">
   <div class="quiz-header">
-    <h2>Prüfe dich <em>selbst</em></h2>
+    <h2>Pruefe dich <em>selbst</em></h2>
   </div>
 
   <div class="quiz-q" data-correct="1">
-    <div class="quiz-q-label">Frage 1 · 1. Gesetz</div>
+    <div class="quiz-q-label">Frage 1 &middot; 1. Gesetz</div>
     <div class="quiz-q-text">Wo steht die Sonne innerhalb einer Planetenellipse?</div>
     <div class="quiz-options">
       <button class="quiz-opt">Genau im geometrischen Mittelpunkt der Ellipse.</button>
       <button class="quiz-opt">In einem der beiden Brennpunkte der Ellipse.</button>
       <button class="quiz-opt">Im Aphel, dem sonnenfernsten Punkt.</button>
-      <button class="quiz-opt">Auf der Hauptachse, aber außerhalb der Ellipse.</button>
+      <button class="quiz-opt">Auf der Hauptachse, aber ausserhalb der Ellipse.</button>
     </div>
-    <div class="quiz-feedback">Richtig. Die Sonne sitzt in einem Brennpunkt — nicht im Mittelpunkt. Der andere Brennpunkt ist leer. Das war Keplers revolutionäre Erkenntnis gegen das Dogma der perfekten Kreisbahn.</div>
+    <div class="quiz-feedback">Richtig. Die Sonne sitzt in einem Brennpunkt - nicht im Mittelpunkt. Der andere Brennpunkt ist leer. Das war Keplers revolutionaere Erkenntnis gegen das Dogma der perfekten Kreisbahn.</div>
   </div>
 
   <div class="quiz-q" data-correct="2">
-    <div class="quiz-q-label">Frage 2 · 2. Gesetz</div>
+    <div class="quiz-q-label">Frage 2 &middot; 2. Gesetz</div>
     <div class="quiz-q-text">Ein Komet fliegt sehr nah an der Sonne vorbei (Perihel). Was passiert mit seiner Bahngeschwindigkeit?</div>
     <div class="quiz-options">
-      <button class="quiz-opt">Sie bleibt konstant — das garantiert der Flächensatz.</button>
-      <button class="quiz-opt">Sie wird langsamer, weil die Sonne ihn festhält.</button>
-      <button class="quiz-opt">Sie wird maximal — im Perihel ist der Komet am schnellsten.</button>
-      <button class="quiz-opt">Sie hängt nicht vom Abstand zur Sonne ab.</button>
+      <button class="quiz-opt">Sie bleibt konstant - das garantiert der Flaechensatz.</button>
+      <button class="quiz-opt">Sie wird langsamer, weil die Sonne ihn festhaelt.</button>
+      <button class="quiz-opt">Sie wird maximal - im Perihel ist der Komet am schnellsten.</button>
+      <button class="quiz-opt">Sie haengt nicht vom Abstand zur Sonne ab.</button>
     </div>
-    <div class="quiz-feedback">Richtig. Damit der Fahrstrahl in gleichen Zeiten gleiche Flächen überstreicht, muss der Planet/Komet im Perihel schneller sein. Maximale Geschwindigkeit im Perihel, minimale im Aphel.</div>
+    <div class="quiz-feedback">Richtig. Damit der Fahrstrahl in gleichen Zeiten gleiche Flaechen ueberstreicht, muss der Planet/Komet im Perihel schneller sein. Maximale Geschwindigkeit im Perihel, minimale im Aphel.</div>
   </div>
 
   <div class="quiz-q" data-correct="1">
-    <div class="quiz-q-label">Frage 3 · 3. Gesetz</div>
-    <div class="quiz-q-text">Ein hypothetischer Planet hat eine große Halbachse von a = 4 AE. Wie lange dauert ein Umlauf um die Sonne?</div>
+    <div class="quiz-q-label">Frage 3 &middot; 3. Gesetz</div>
+    <div class="quiz-q-text">Ein hypothetischer Planet hat eine grosse Halbachse von a = 4 AE. Wie lange dauert ein Umlauf um die Sonne?</div>
     <div class="quiz-options">
       <button class="quiz-opt">4 Jahre, weil er 4-mal so weit weg ist wie die Erde.</button>
-      <button class="quiz-opt">8 Jahre, denn T² = a³ = 64, also T = 8.</button>
-      <button class="quiz-opt">16 Jahre, weil a² = 16.</button>
-      <button class="quiz-opt">2 Jahre, denn T = √a.</button>
+      <button class="quiz-opt">8 Jahre, denn T&sup2; = a&sup3; = 64, also T = 8.</button>
+      <button class="quiz-opt">16 Jahre, weil a&sup2; = 16.</button>
+      <button class="quiz-opt">2 Jahre, denn T = &radic;a.</button>
     </div>
-    <div class="quiz-feedback">Richtig. T² = a³ = 4³ = 64, also T = 8 Jahre. Größere Bahnen brauchen überproportional länger.</div>
+    <div class="quiz-feedback">Richtig. T&sup2; = a&sup3; = 4&sup3; = 64, also T = 8 Jahre. Groessere Bahnen brauchen ueberproportional laenger.</div>
   </div>
 
   <div class="quiz-q" data-correct="0">
-    <div class="quiz-q-label">Frage 4 · Verständnis</div>
-    <div class="quiz-q-text">Eine Bahn hat die Exzentrizität e = 0. Was folgt daraus?</div>
+    <div class="quiz-q-label">Frage 4 &middot; Verstaendnis</div>
+    <div class="quiz-q-text">Eine Bahn hat die Exzentrizitaet e = 0. Was folgt daraus?</div>
     <div class="quiz-options">
-      <button class="quiz-opt">Die Bahn ist ein perfekter Kreis — die beiden Brennpunkte fallen zusammen.</button>
+      <button class="quiz-opt">Die Bahn ist ein perfekter Kreis - die beiden Brennpunkte fallen zusammen.</button>
       <button class="quiz-opt">Die Bahn ist eine Parabel.</button>
       <button class="quiz-opt">Der Planet bewegt sich nicht.</button>
       <button class="quiz-opt">Die Bahn ist extrem langgestreckt.</button>
     </div>
-    <div class="quiz-feedback">Richtig. e = 0 bedeutet c = 0 (kein Abstand zwischen Mittelpunkt und Brennpunkt). Beide Brennpunkte liegen aufeinander im Mittelpunkt — das ist die Definition eines Kreises. Je näher e an 1, desto langgestreckter. Bei e ≥ 1 ist die Bahn nicht mehr geschlossen (Parabel/Hyperbel).</div>
+    <div class="quiz-feedback">Richtig. e = 0 bedeutet c = 0 (kein Abstand zwischen Mittelpunkt und Brennpunkt). Beide Brennpunkte liegen aufeinander im Mittelpunkt - das ist die Definition eines Kreises. Je naeher e an 1, desto langgestreckter. Bei e >= 1 ist die Bahn nicht mehr geschlossen (Parabel/Hyperbel).</div>
   </div>
 
   <div class="quiz-q" data-correct="2">
-    <div class="quiz-q-label">Frage 5 · Synthese</div>
+    <div class="quiz-q-label">Frage 5 &middot; Synthese</div>
     <div class="quiz-q-text">Welche Aussage ist FALSCH?</div>
     <div class="quiz-options">
       <button class="quiz-opt">Ein Planet im Aphel bewegt sich langsamer als im Perihel.</button>
       <button class="quiz-opt">Die Halbachse a bestimmt die Umlaufzeit eines Planeten.</button>
-      <button class="quiz-opt">Je größer die Exzentrizität, desto kürzer die Umlaufzeit.</button>
-      <button class="quiz-opt">T²/a³ ist für alle Planeten unseres Sonnensystems nahezu gleich.</button>
+      <button class="quiz-opt">Je groesser die Exzentrizitaet, desto kuerzer die Umlaufzeit.</button>
+      <button class="quiz-opt">T&sup2;/a&sup3; ist fuer alle Planeten unseres Sonnensystems nahezu gleich.</button>
     </div>
-    <div class="quiz-feedback">Richtig erkannt: Die Umlaufzeit hängt nach dem 3. Gesetz nur von der großen Halbachse a ab — nicht von der Exzentrizität. Ein sehr langgestreckter und ein fast kreisförmiger Orbit mit gleichem a haben dieselbe Umlaufzeit.</div>
+    <div class="quiz-feedback">Richtig erkannt: Die Umlaufzeit haengt nach dem 3. Gesetz nur von der grossen Halbachse a ab - nicht von der Exzentrizitaet. Ein sehr langgestreckter und ein fast kreisfoermiger Orbit mit gleichem a haben dieselbe Umlaufzeit.</div>
   </div>
 </section>
 
@@ -1205,20 +1276,21 @@ line-height: 1.5;
 </footer>
 
 <script>
-// ------- NAV -------
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
+// NAV
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
   if (window.scrollY > 50) nav.classList.add('scrolled');
   else nav.classList.remove('scrolled');
 });
 
-// ------- STARFIELD -------
-const starfield = document.getElementById('starfield');
-for (let i = 0; i < 80; i++) {
-  const s = document.createElement('div');
+// STARFIELD
+var starfield = document.getElementById('starfield');
+for (var i = 0; i < 80; i++) {
+  var s = document.createElement('div');
   s.className = 'star';
-  const size = Math.random() * 2 + 0.5;
-  s.style.width = s.style.height = size + 'px';
+  var size = Math.random() * 2 + 0.5;
+  s.style.width = size + 'px';
+  s.style.height = size + 'px';
   s.style.left = Math.random() * 100 + '%';
   s.style.top = Math.random() * 100 + '%';
   s.style.animationDelay = Math.random() * 4 + 's';
@@ -1226,132 +1298,107 @@ for (let i = 0; i < 80; i++) {
   starfield.appendChild(s);
 }
 
-// ------- SHARED UTIL -------
-function dpr(canvas) {
-  const ratio = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * ratio;
-  canvas.height = rect.height * ratio;
-  const ctx = canvas.getContext('2d');
-  ctx.scale(ratio, ratio);
-  return { ctx, w: rect.width, h: rect.height };
-}
-
-// ==========================================
-// LAW 1 — ELLIPSE DEMO
-// ==========================================
+// LAW 1 - ELLIPSE DEMO
 (function() {
-  const canvas = document.getElementById('canvas1');
-  const ctx = canvas.getContext('2d');
-  const eccSlider = document.getElementById('ecc1');
-  const aSlider = document.getElementById('a1');
-  const eccVal = document.getElementById('ecc1val');
-  const aVal = document.getElementById('a1val');
-  const playBtn = document.getElementById('play1');
-  const resetBtn = document.getElementById('reset1');
+  var canvas = document.getElementById('canvas1');
+  var ctx = canvas.getContext('2d');
+  var eccSlider = document.getElementById('ecc1');
+  var aSlider = document.getElementById('a1');
+  var eccVal = document.getElementById('ecc1val');
+  var aVal = document.getElementById('a1val');
+  var playBtn = document.getElementById('play1');
+  var resetBtn = document.getElementById('reset1');
 
-  let animating = false;
-  let theta = 0;
+  var animating = false;
+  var theta = 0;
 
   function draw() {
-    const W = canvas.width, H = canvas.height;
+    var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
 
-    const cx = W / 2, cy = H / 2;
-    const a = parseFloat(aSlider.value);
-    const e = parseFloat(eccSlider.value);
-    const b = a * Math.sqrt(1 - e * e);
-    const c = a * e;
+    var cx = W / 2, cy = H / 2;
+    var a = parseFloat(aSlider.value);
+    var e = parseFloat(eccSlider.value);
+    var b = a * Math.sqrt(1 - e * e);
+    var c = a * e;
 
-    // Background grid
     ctx.strokeStyle = 'rgba(212, 168, 75, 0.04)';
     ctx.lineWidth = 1;
-    for (let x = 0; x < W; x += 30) {
+    for (var x = 0; x < W; x += 30) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
     }
-    for (let y = 0; y < H; y += 30) {
+    for (var y = 0; y < H; y += 30) {
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
     }
 
-    // Ellipse
     ctx.strokeStyle = '#c8b88a';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.ellipse(cx, cy, a, b, 0, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Center cross
     ctx.strokeStyle = 'rgba(122, 111, 85, 0.5)';
     ctx.setLineDash([3, 4]);
     ctx.beginPath(); ctx.moveTo(cx - a - 10, cy); ctx.lineTo(cx + a + 10, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, cy - b - 10); ctx.lineTo(cx, cy + b + 10); ctx.stroke();
     ctx.setLineDash([]);
 
-    // Foci
-    const f1 = { x: cx - c, y: cy };
-    const f2 = { x: cx + c, y: cy };
+    var f1x = cx - c, f1y = cy;
+    var f2x = cx + c, f2y = cy;
 
-    // F2 empty focus
     ctx.fillStyle = '#7a6f55';
-    ctx.beginPath(); ctx.arc(f2.x, f2.y, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(f2x, f2y, 5, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#7a6f55';
     ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(f2.x, f2.y, 8, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(f2x, f2y, 8, 0, Math.PI * 2); ctx.stroke();
     ctx.fillStyle = '#7a6f55';
     ctx.font = 'italic 13px "Cormorant Garamond"';
-    ctx.fillText('F₂ (leer)', f2.x + 14, f2.y + 4);
+    ctx.fillText('F2 (leer)', f2x + 14, f2y + 4);
 
-    // Sun F1
-    const sunGradient = ctx.createRadialGradient(f1.x, f1.y, 2, f1.x, f1.y, 20);
+    var sunGradient = ctx.createRadialGradient(f1x, f1y, 2, f1x, f1y, 20);
     sunGradient.addColorStop(0, '#ffefa8');
     sunGradient.addColorStop(0.5, '#f0c661');
     sunGradient.addColorStop(1, 'rgba(212, 168, 75, 0)');
     ctx.fillStyle = sunGradient;
-    ctx.beginPath(); ctx.arc(f1.x, f1.y, 20, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(f1x, f1y, 20, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#f0c661';
-    ctx.beginPath(); ctx.arc(f1.x, f1.y, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(f1x, f1y, 7, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#d4a84b';
     ctx.font = 'italic 13px "Cormorant Garamond"';
-    ctx.fillText('☉ Sonne (F₁)', f1.x - 70, f1.y - 14);
+    ctx.fillText('Sonne (F1)', f1x - 70, f1y - 14);
 
-    // Planet position
-    const px = cx + a * Math.cos(theta);
-    const py = cy + b * Math.sin(theta);
+    var px = cx + a * Math.cos(theta);
+    var py = cy + b * Math.sin(theta);
 
-    // Distance lines
     ctx.strokeStyle = 'rgba(244, 234, 213, 0.35)';
     ctx.setLineDash([4, 4]);
     ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(f1.x, f1.y); ctx.lineTo(px, py); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(f2.x, f2.y); ctx.lineTo(px, py); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(f1x, f1y); ctx.lineTo(px, py); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(f2x, f2y); ctx.lineTo(px, py); ctx.stroke();
     ctx.setLineDash([]);
 
-    // Distances
-    const r1 = Math.hypot(px - f1.x, py - f1.y);
-    const r2 = Math.hypot(px - f2.x, py - f2.y);
+    var r1 = Math.hypot(px - f1x, py - f1y);
+    var r2 = Math.hypot(px - f2x, py - f2y);
 
     ctx.fillStyle = '#c8b88a';
     ctx.font = '11px "JetBrains Mono"';
-    ctx.fillText('r₁ = ' + r1.toFixed(0), (f1.x + px) / 2 + 5, (f1.y + py) / 2 - 5);
-    ctx.fillText('r₂ = ' + r2.toFixed(0), (f2.x + px) / 2 + 5, (f2.y + py) / 2 - 5);
+    ctx.fillText('r1 = ' + r1.toFixed(0), (f1x + px) / 2 + 5, (f1y + py) / 2 - 5);
+    ctx.fillText('r2 = ' + r2.toFixed(0), (f2x + px) / 2 + 5, (f2y + py) / 2 - 5);
 
-    // Planet
     ctx.fillStyle = '#f4ead5';
     ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = 'rgba(244, 234, 213, 0.4)';
     ctx.beginPath(); ctx.arc(px, py, 11, 0, Math.PI * 2); ctx.stroke();
 
-    // Labels for a and b
     ctx.fillStyle = '#d4a84b';
     ctx.font = 'italic 14px "Cormorant Garamond"';
     ctx.fillText('a', cx + a / 2, cy - 8);
     ctx.fillText('b', cx - 16, cy - b / 2);
 
-    // Info box
     ctx.fillStyle = 'rgba(7, 6, 10, 0.85)';
-    ctx.fillRect(12, 12, 200, 90);
+    ctx.fillRect(12, 12, 200, 108);
     ctx.strokeStyle = '#3a3124';
-    ctx.strokeRect(12, 12, 200, 90);
+    ctx.strokeRect(12, 12, 200, 108);
     ctx.fillStyle = '#d4a84b';
     ctx.font = '10px "Inter"';
     ctx.fillText('BAHNPARAMETER', 24, 30);
@@ -1361,7 +1408,7 @@ function dpr(canvas) {
     ctx.fillText('a = ' + a.toFixed(0), 24, 66);
     ctx.fillText('b = ' + b.toFixed(1), 24, 82);
     ctx.fillStyle = '#f0c661';
-    ctx.fillText('r₁+r₂ = ' + (r1 + r2).toFixed(0) + ' (=2a)', 24, 98);
+    ctx.fillText('r1+r2 = ' + (r1 + r2).toFixed(0) + ' (=2a)', 24, 102);
   }
 
   function animate() {
@@ -1372,21 +1419,22 @@ function dpr(canvas) {
     requestAnimationFrame(animate);
   }
 
-  eccSlider.addEventListener('input', () => {
+  eccSlider.addEventListener('input', function() {
     eccVal.textContent = parseFloat(eccSlider.value).toFixed(2);
     draw();
   });
-  aSlider.addEventListener('input', () => {
+  aSlider.addEventListener('input', function() {
     aVal.textContent = aSlider.value;
     draw();
   });
-  playBtn.addEventListener('click', () => {
+  playBtn.addEventListener('click', function() {
     animating = !animating;
     playBtn.textContent = animating ? 'Stopp' : 'Animation';
-    playBtn.classList.toggle('active', animating);
+    if (animating) playBtn.classList.add('active');
+    else playBtn.classList.remove('active');
     if (animating) animate();
   });
-  resetBtn.addEventListener('click', () => {
+  resetBtn.addEventListener('click', function() {
     theta = 0;
     animating = false;
     playBtn.textContent = 'Animation';
@@ -1399,107 +1447,101 @@ function dpr(canvas) {
   draw();
 })();
 
-// ==========================================
-// LAW 2 — AREA SWEEP
-// ==========================================
+// LAW 2 - AREA SWEEP
 (function() {
-  const canvas = document.getElementById('canvas2');
-  const ctx = canvas.getContext('2d');
-  const speedSlider = document.getElementById('speed2');
-  const speedVal = document.getElementById('speed2val');
-  const playBtn = document.getElementById('play2');
-  const clearBtn = document.getElementById('clear2');
-  const sweepBtn = document.getElementById('sweep2');
-  const vNowEl = document.getElementById('vNow');
-  const rNowEl = document.getElementById('rNow');
+  var canvas = document.getElementById('canvas2');
+  var ctx = canvas.getContext('2d');
+  var speedSlider = document.getElementById('speed2');
+  var speedVal = document.getElementById('speed2val');
+  var playBtn = document.getElementById('play2');
+  var clearBtn = document.getElementById('clear2');
+  var sweepBtn = document.getElementById('sweep2');
+  var vNowEl = document.getElementById('vNow');
+  var rNowEl = document.getElementById('rNow');
 
-  // Ellipse params (fixed for this demo)
-  const a = 170, e = 0.6;
-  const b = a * Math.sqrt(1 - e * e);
-  const c = a * e;
+  var a = 170, e = 0.6;
+  var b = a * Math.sqrt(1 - e * e);
+  var c = a * e;
 
-  let playing = true;
-  let meanAnomaly = 0; // M, increases uniformly (Kepler-friendly parametrization)
-  let lastTime = performance.now();
-  let trail = []; // past positions
-  let sweeps = []; // completed sweep polygons
-  let currentSweep = null; // {startM, points: [...]}
+  var playing = true;
+  var meanAnomaly = 0;
+  var lastTime = performance.now();
+  var trail = [];
+  var sweeps = [];
+  var currentSweep = null;
 
-  // Solve Kepler equation M = E - e*sin(E) for E (eccentric anomaly)
   function solveKepler(M, e) {
-    let E = M;
-    for (let i = 0; i < 8; i++) {
+    var E = M;
+    for (var i = 0; i < 8; i++) {
       E = E - (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
     }
     return E;
   }
 
   function pos(M) {
-    const E = solveKepler(M, e);
-    const x = a * (Math.cos(E) - e);
-    const y = b * Math.sin(E);
-    return { x, y, E };
+    var E = solveKepler(M, e);
+    var x = a * (Math.cos(E) - e);
+    var y = b * Math.sin(E);
+    return { x: x, y: y, E: E };
   }
 
   function draw() {
-    const W = canvas.width, H = canvas.height;
+    var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
-    const cx = W / 2, cy = H / 2;
+    var cx = W / 2, cy = H / 2;
 
-    // Sun at focus (left)
-    const sunX = cx - c, sunY = cy;
+    var sunX = cx - c, sunY = cy;
 
-    // Ellipse
     ctx.strokeStyle = '#7a6f55';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.ellipse(cx, cy, a, b, 0, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Completed sweeps
-    sweeps.forEach((sw, idx) => {
+    for (var idx = 0; idx < sweeps.length; idx++) {
+      var sw = sweeps[idx];
       ctx.fillStyle = 'rgba(194, 84, 42, 0.28)';
       ctx.strokeStyle = 'rgba(194, 84, 42, 0.7)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(sunX, sunY);
-      sw.points.forEach(p => ctx.lineTo(cx + p.x, cy + p.y));
+      for (var k = 0; k < sw.points.length; k++) {
+        ctx.lineTo(cx + sw.points[k].x, cy + sw.points[k].y);
+      }
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
 
-      // Label
-      const mid = sw.points[Math.floor(sw.points.length / 2)];
+      var mid = sw.points[Math.floor(sw.points.length / 2)];
       ctx.fillStyle = '#f0c661';
       ctx.font = 'italic 13px "Cormorant Garamond"';
       ctx.fillText('A' + (idx + 1), cx + mid.x * 0.55 + 8, cy + mid.y * 0.55);
-    });
+    }
 
-    // Current sweep in progress
     if (currentSweep) {
       ctx.fillStyle = 'rgba(240, 198, 97, 0.22)';
       ctx.strokeStyle = 'rgba(240, 198, 97, 0.8)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(sunX, sunY);
-      currentSweep.points.forEach(p => ctx.lineTo(cx + p.x, cy + p.y));
+      for (var m = 0; m < currentSweep.points.length; m++) {
+        ctx.lineTo(cx + currentSweep.points[m].x, cy + currentSweep.points[m].y);
+      }
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
     }
 
-    // Trail
     ctx.strokeStyle = 'rgba(244, 234, 213, 0.2)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    trail.forEach((p, i) => {
-      if (i === 0) ctx.moveTo(cx + p.x, cy + p.y);
-      else ctx.lineTo(cx + p.x, cy + p.y);
-    });
+    for (var t = 0; t < trail.length; t++) {
+      if (t === 0) ctx.moveTo(cx + trail[t].x, cy + trail[t].y);
+      else ctx.lineTo(cx + trail[t].x, cy + trail[t].y);
+    }
     ctx.stroke();
 
-    // Sun glow
-    const g = ctx.createRadialGradient(sunX, sunY, 2, sunX, sunY, 25);
+    var g = ctx.createRadialGradient(sunX, sunY, 2, sunX, sunY, 25);
     g.addColorStop(0, '#ffefa8');
     g.addColorStop(0.5, '#f0c661');
     g.addColorStop(1, 'rgba(212, 168, 75, 0)');
@@ -1508,11 +1550,9 @@ function dpr(canvas) {
     ctx.fillStyle = '#f0c661';
     ctx.beginPath(); ctx.arc(sunX, sunY, 8, 0, Math.PI * 2); ctx.fill();
 
-    // Planet
-    const p = pos(meanAnomaly);
-    const px = cx + p.x, py = cy + p.y;
+    var p = pos(meanAnomaly);
+    var px = cx + p.x, py = cy + p.y;
 
-    // Line from sun to planet (radius vector)
     ctx.strokeStyle = 'rgba(244, 234, 213, 0.4)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(sunX, sunY); ctx.lineTo(px, py); ctx.stroke();
@@ -1520,15 +1560,12 @@ function dpr(canvas) {
     ctx.fillStyle = '#f4ead5';
     ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2); ctx.fill();
 
-    // Speed indication
-    const r = Math.hypot(p.x - (-c), p.y);
-    // Velocity: in eccentric-anomaly parametrization, v proportional to sqrt((1+e*cosν)/(1-e^2)) ~ we can compute using vis-viva-like: v ∝ sqrt(2/r - 1/a)
-    const vRel = Math.sqrt(2 / r - 1 / a) / Math.sqrt(1 / a); // normalized by circular speed at a
-    const rRel = r / a;
+    var r = Math.hypot(p.x - (-c), p.y);
+    var vRel = Math.sqrt(2 / r - 1 / a) / Math.sqrt(1 / a);
+    var rRel = r / a;
     vNowEl.innerHTML = vRel.toFixed(2) + '<span class="data-cell-unit">rel.</span>';
     rNowEl.innerHTML = rRel.toFixed(2) + '<span class="data-cell-unit">a</span>';
 
-    // Perihelion / Aphelion markers
     ctx.fillStyle = '#7a6f55';
     ctx.font = 'italic 11px "Cormorant Garamond"';
     ctx.fillText('Perihel', cx + a - 30, cy + b + 18);
@@ -1536,24 +1573,22 @@ function dpr(canvas) {
   }
 
   function tick(now) {
-    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    var dt = Math.min((now - lastTime) / 1000, 0.05);
     lastTime = now;
 
     if (playing) {
-      const speed = parseFloat(speedSlider.value);
+      var speed = parseFloat(speedSlider.value);
       meanAnomaly += dt * 1.2 * speed;
       if (meanAnomaly > Math.PI * 2) meanAnomaly -= Math.PI * 2;
 
-      // Track trail
-      const p = pos(meanAnomaly);
+      var p = pos(meanAnomaly);
       trail.push({ x: p.x, y: p.y });
       if (trail.length > 600) trail.shift();
 
-      // Current sweep
       if (currentSweep) {
         currentSweep.points.push({ x: p.x, y: p.y });
-        const elapsed = meanAnomaly - currentSweep.startM;
-        const effElapsed = (elapsed + Math.PI * 2) % (Math.PI * 2);
+        var elapsed = meanAnomaly - currentSweep.startM;
+        var effElapsed = (elapsed + Math.PI * 2) % (Math.PI * 2);
         if (effElapsed >= currentSweep.duration) {
           sweeps.push(currentSweep);
           if (sweeps.length > 3) sweeps.shift();
@@ -1566,24 +1601,24 @@ function dpr(canvas) {
     requestAnimationFrame(tick);
   }
 
-  speedSlider.addEventListener('input', () => {
+  speedSlider.addEventListener('input', function() {
     speedVal.textContent = parseFloat(speedSlider.value).toFixed(1) + 'x';
   });
-  playBtn.addEventListener('click', () => {
+  playBtn.addEventListener('click', function() {
     playing = !playing;
     playBtn.textContent = playing ? 'Pause' : 'Start';
-    playBtn.classList.toggle('active', playing);
+    if (playing) playBtn.classList.add('active');
+    else playBtn.classList.remove('active');
   });
-  clearBtn.addEventListener('click', () => {
+  clearBtn.addEventListener('click', function() {
     sweeps = [];
     currentSweep = null;
   });
-  sweepBtn.addEventListener('click', () => {
-    // Start a sweep of fixed duration in mean anomaly (= constant time interval!)
-    const p = pos(meanAnomaly);
+  sweepBtn.addEventListener('click', function() {
+    var p = pos(meanAnomaly);
     currentSweep = {
       startM: meanAnomaly,
-      duration: Math.PI * 2 / 8, // 1/8 of orbital period
+      duration: Math.PI * 2 / 8,
       points: [{ x: p.x, y: p.y }]
     };
   });
@@ -1591,18 +1626,16 @@ function dpr(canvas) {
   requestAnimationFrame(tick);
 })();
 
-// ==========================================
-// LAW 3 — T² vs a³ visualization
-// ==========================================
+// LAW 3 - T vs a visualization
 (function() {
-  const canvas = document.getElementById('canvas3');
-  const ctx = canvas.getContext('2d');
-  const aSlider = document.getElementById('a3');
-  const aVal = document.getElementById('a3val');
-  const tEl = document.getElementById('t3');
-  const ratioEl = document.getElementById('ratio3');
+  var canvas = document.getElementById('canvas3');
+  var ctx = canvas.getContext('2d');
+  var aSlider = document.getElementById('a3');
+  var aVal = document.getElementById('a3val');
+  var tEl = document.getElementById('t3');
+  var ratioEl = document.getElementById('ratio3');
 
-  const planets = [
+  var planets = [
     { name: 'Merkur', a: 0.387, T: 0.241 },
     { name: 'Venus', a: 0.723, T: 0.615 },
     { name: 'Erde', a: 1.000, T: 1.000 },
@@ -1614,44 +1647,44 @@ function dpr(canvas) {
   ];
 
   function draw() {
-    const W = canvas.width, H = canvas.height;
+    var W = canvas.width, H = canvas.height;
     ctx.clearRect(0, 0, W, H);
 
-    // log-log plot: a from 0.3 to 40, T from 0.2 to 200
-    const padL = 50, padR = 20, padT = 20, padB = 40;
-    const plotW = W - padL - padR;
-    const plotH = H - padT - padB;
+    var padL = 50, padR = 20, padT = 20, padB = 40;
+    var plotW = W - padL - padR;
+    var plotH = H - padT - padB;
 
-    // log scales
-    const aMin = 0.3, aMax = 40;
-    const tMin = 0.2, tMax = 200;
-    const logAMin = Math.log10(aMin), logAMax = Math.log10(aMax);
-    const logTMin = Math.log10(tMin), logTMax = Math.log10(tMax);
+    var aMin = 0.3, aMax = 40;
+    var tMin = 0.2, tMax = 200;
+    var logAMin = Math.log10(aMin), logAMax = Math.log10(aMax);
+    var logTMin = Math.log10(tMin), logTMax = Math.log10(tMax);
 
     function px(a) { return padL + (Math.log10(a) - logAMin) / (logAMax - logAMin) * plotW; }
     function py(t) { return padT + plotH - (Math.log10(t) - logTMin) / (logTMax - logTMin) * plotH; }
 
-    // Grid
     ctx.strokeStyle = 'rgba(122, 111, 85, 0.15)';
     ctx.lineWidth = 1;
-    [0.3, 1, 3, 10, 30].forEach(v => {
+    var xticks = [0.3, 1, 3, 10, 30];
+    for (var i = 0; i < xticks.length; i++) {
+      var v = xticks[i];
       if (v >= aMin && v <= aMax) {
-        const x = px(v);
+        var x = px(v);
         ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke();
         ctx.fillStyle = '#7a6f55'; ctx.font = '10px "JetBrains Mono"';
         ctx.fillText(v, x - 8, padT + plotH + 14);
       }
-    });
-    [0.3, 1, 3, 10, 30, 100].forEach(v => {
-      if (v >= tMin && v <= tMax) {
-        const y = py(v);
+    }
+    var yticks = [0.3, 1, 3, 10, 30, 100];
+    for (var j = 0; j < yticks.length; j++) {
+      var vy = yticks[j];
+      if (vy >= tMin && vy <= tMax) {
+        var y = py(vy);
         ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke();
         ctx.fillStyle = '#7a6f55'; ctx.font = '10px "JetBrains Mono"';
-        ctx.fillText(v, 10, y + 3);
+        ctx.fillText(vy, 10, y + 3);
       }
-    });
+    }
 
-    // Axis labels
     ctx.fillStyle = '#d4a84b';
     ctx.font = 'italic 13px "Cormorant Garamond"';
     ctx.fillText('a (AE)', padL + plotW / 2 - 20, H - 8);
@@ -1661,57 +1694,54 @@ function dpr(canvas) {
     ctx.fillText('T (Jahre)', 0, 0);
     ctx.restore();
 
-    // Line: T² = a³ → T = a^(3/2)
     ctx.strokeStyle = '#c2542a';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    let first = true;
-    for (let la = logAMin; la <= logAMax; la += 0.02) {
-      const a = Math.pow(10, la);
-      const t = Math.pow(a, 1.5);
-      if (t >= tMin && t <= tMax) {
-        const x = px(a), y = py(t);
-        if (first) { ctx.moveTo(x, y); first = false; }
-        else ctx.lineTo(x, y);
+    var first = true;
+    for (var la = logAMin; la <= logAMax; la += 0.02) {
+      var aVal2 = Math.pow(10, la);
+      var tVal = Math.pow(aVal2, 1.5);
+      if (tVal >= tMin && tVal <= tMax) {
+        var xPos = px(aVal2), yPos = py(tVal);
+        if (first) { ctx.moveTo(xPos, yPos); first = false; }
+        else ctx.lineTo(xPos, yPos);
       }
     }
     ctx.stroke();
 
-    // Label the line
     ctx.fillStyle = '#c2542a';
     ctx.font = 'italic 14px "Cormorant Garamond"';
     ctx.fillText('T = a^(3/2)', px(15), py(40));
 
-    // Planet points
-    planets.forEach(p => {
-      const x = px(p.a), y = py(p.T);
+    for (var p = 0; p < planets.length; p++) {
+      var pl = planets[p];
+      var xP = px(pl.a), yP = py(pl.T);
       ctx.fillStyle = '#f4ead5';
-      ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(xP, yP, 4, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#c8b88a';
       ctx.font = 'italic 11px "Cormorant Garamond"';
-      ctx.fillText(p.name, x + 7, y + 3);
-    });
+      ctx.fillText(pl.name, xP + 7, yP + 3);
+    }
 
-    // User's current planet
-    const ua = parseFloat(aSlider.value);
-    const uT = Math.pow(ua, 1.5);
+    var ua = parseFloat(aSlider.value);
+    var uT = Math.pow(ua, 1.5);
     if (ua >= aMin && uT <= tMax) {
-      const x = px(ua), y = py(Math.min(uT, tMax));
+      var xU = px(ua), yU = py(Math.min(uT, tMax));
       ctx.fillStyle = '#f0c661';
-      ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(xU, yU, 7, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#f0c661';
       ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(xU, yU, 12, 0, Math.PI * 2); ctx.stroke();
     }
   }
 
   function update() {
-    const a = parseFloat(aSlider.value);
-    const T = Math.pow(a, 1.5);
-    const ratio = (T * T) / (a * a * a);
+    var a = parseFloat(aSlider.value);
+    var T = Math.pow(a, 1.5);
+    var ratio = (T * T) / (a * a * a);
     aVal.textContent = a.toFixed(2) + ' AE';
     tEl.innerHTML = T.toFixed(2) + '<span class="data-cell-unit">Jahre</span>';
-    ratioEl.innerHTML = ratio.toFixed(3) + '<span class="data-cell-unit">AE³/J²</span>';
+    ratioEl.innerHTML = ratio.toFixed(3) + '<span class="data-cell-unit">AE&sup3;/J&sup2;</span>';
     draw();
   }
 
@@ -1719,27 +1749,29 @@ function dpr(canvas) {
   update();
 })();
 
-// ==========================================
 // QUIZ
-// ==========================================
-document.querySelectorAll('.quiz-q').forEach(q => {
-  const correct = parseInt(q.dataset.correct);
-  const options = q.querySelectorAll('.quiz-opt');
-  const feedback = q.querySelector('.quiz-feedback');
-  options.forEach((opt, i) => {
-    opt.addEventListener('click', () => {
-      options.forEach(o => o.disabled = true);
-      if (i === correct) {
-        opt.classList.add('correct');
-      } else {
-        opt.classList.add('wrong');
-        options[correct].classList.add('correct');
-      }
-      feedback.classList.add('show');
-    });
-  });
-});
-
+var quizQs = document.querySelectorAll('.quiz-q');
+for (var qi = 0; qi < quizQs.length; qi++) {
+  (function(q) {
+    var correct = parseInt(q.dataset.correct);
+    var options = q.querySelectorAll('.quiz-opt');
+    var feedback = q.querySelector('.quiz-feedback');
+    for (var oi = 0; oi < options.length; oi++) {
+      (function(opt, i) {
+        opt.addEventListener('click', function() {
+          for (var ci = 0; ci < options.length; ci++) options[ci].disabled = true;
+          if (i === correct) {
+            opt.classList.add('correct');
+          } else {
+            opt.classList.add('wrong');
+            options[correct].classList.add('correct');
+          }
+          feedback.classList.add('show');
+        });
+      })(options[oi], oi);
+    }
+  })(quizQs[qi]);
+}
 </script>
 
 </body>
