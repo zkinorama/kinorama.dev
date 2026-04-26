@@ -121,12 +121,12 @@
   }
 
   .hero {
-    min-height: 100vh;
+    min-height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 120px 40px 80px;
+    padding: 160px 40px 60px;
     overflow: hidden;
   }
 
@@ -167,19 +167,15 @@
   }
 
   .hero-title {
-    font-size: clamp(64px, 12vw, 160px);
+    font-size: clamp(48px, 8vw, 96px);
     font-weight: 300;
-    line-height: 0.9;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeUp 1.2s 0.4s forwards;
-  }
-  .hero-title em {
     font-style: italic;
+    line-height: 1;
+    letter-spacing: -0.02em;
     color: var(--gold);
-    font-weight: 400;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 1.2s 0.2s forwards;
   }
 
   .hero-subtitle {
@@ -211,13 +207,13 @@
   }
 
   .ornament {
-    margin: 40px auto;
+    margin: 28px auto 0;
     width: 120px;
     height: 1px;
     background: var(--gold);
     position: relative;
     opacity: 0;
-    animation: fadeUp 1s 1s forwards;
+    animation: fadeUp 1s 0.5s forwards;
   }
   .ornament::before {
     content: "";
@@ -231,7 +227,7 @@
   }
 
   .cards-section {
-    padding: 60px 40px 120px;
+    padding: 20px 40px 120px;
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
@@ -474,20 +470,12 @@
 <section class="hero">
   <div class="hero-bg" id="starfield"></div>
   <div class="hero-inner">
-    <div class="hero-kicker">kinorama.dev · Anno 2026</div>
-    <h1 class="hero-title">kinorama<em>.</em></h1>
-    <div class="hero-subtitle">Ein Ort zum Lernen, Rechnen, Spielen</div>
-    <p class="hero-tagline">
-      Kleine Werkzeuge und Studien, die entstehen, wenn <em style="color: var(--gold); font-style: italic;">Neugier</em> auf einen ruhigen Nachmittag trifft. Alles kostenlos, alles einfach, alles schön.
-    </p>
+    <h1 class="hero-title">kinorama.dev</h1>
     <div class="ornament"></div>
   </div>
 </section>
 
 <section class="cards-section">
-  <div class="section-label">Was dich erwartet</div>
-  <h2 class="section-title">Die <em>Werkzeuge</em></h2>
-
   <div class="main-cards">
     <a href="notenrechner.html" class="main-card">
       <div class="main-card-num">I</div>
@@ -523,8 +511,7 @@
 </section>
 
 <footer>
-  <div class="sig">Per aspera ad astra</div>
-  kinorama.dev &middot; gebaut aus Neugier.
+  kinorama.dev
 </footer>
 
 <script>
