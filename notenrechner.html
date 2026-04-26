@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0d0b08">
+<title>kinorama.dev — Notenrechner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b08;
+    --bg-deep: #07060a;
+    --panel: #151210;
+    --panel-2: #1c1812;
+    --ink: #f4ead5;
+    --ink-dim: #c8b88a;
+    --ink-faint: #7a6f55;
+    --gold: #d4a84b;
+    --gold-bright: #f0c661;
+    --rust: #c2542a;
+    --blood: #8b2c1a;
+    --green: #6b9d4a;
+    --green-bright: #8dc562;
+    --red: #c23a2a;
+    --orange: #d98a2b;
+    --line: #3a3124;
+    --line-soft: #2a2319;
+    color-scheme: dark;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: #0d0b08 !important;
+    color-scheme: dark;
+  }
+  html { scroll-behavior: smooth; }
+
+  body {
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(212, 168, 75, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(194, 84, 42, 0.06) 0%, transparent 45%);
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.83 0 0 0 0 0.72 0 0 0 0 0.4 0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(13, 11, 8, 0.95) 0%, rgba(13, 11, 8, 0.7) 70%, transparent 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  nav.scrolled { border-bottom-color: var(--line-soft); }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+  }
+  .nav-logo:hover { color: var(--gold-bright); }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .nav-links a {
+    color: var(--ink-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--gold-bright); }
+  .nav-links a.active { color: var(--gold-bright); }
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold-bright);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover::after,
+  .nav-links a.active::after { width: 100%; }
+
+  @media (max-width: 700px) {
+    nav { padding: 14px 20px; }
+    .nav-logo { font-size: 18px; }
+    .nav-links { gap: 14px; font-size: 10px; }
+  }
+
+  header.page-header {
+    padding: 140px 40px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .page-kicker {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .page-title {
+    font-size: clamp(48px, 8vw, 88px);
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .page-title em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .page-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-top: 20px;
+  }
+
+  .ornament {
+    margin: 40px auto 0;
+    width: 120px;
+    height: 1px;
+    background: var(--gold);
+    position: relative;
+  }
+  .ornament::before {
+    content: "";
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 8px; height: 8px;
+    background: var(--gold);
+  }
+
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    padding: 40px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  @media (max-width: 600px) {
+    .card { padding: 28px 22px; }
+  }
+
+  .card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .grade-header {
+    display: grid;
+    grid-template-columns: 1fr 110px 42px;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+  .grade-header span {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .grade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .grade-row {
+    display: grid;
+    grid-template-columns: 1fr 110px 42px;
+    gap: 10px;
+    align-items: center;
+    animation: slideIn 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  .grade-row.removing { animation: slideOut 0.2s cubic-bezier(.4,0,.2,1) forwards; }
+  @keyframes slideOut { to { opacity:0; transform:translateY(6px) scale(0.97); } }
+
+  input[type="number"] {
+    width: 100%;
+    height: 44px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 0 14px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  input[type="number"]:focus {
+    border-color: var(--gold);
+    background: var(--panel-2);
+    box-shadow: 0 0 0 3px rgba(212, 168, 75, 0.08);
+  }
+  input::placeholder { color: var(--ink-faint); font-weight: 400; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+  .btn-remove {
+    width: 42px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-remove:hover {
+    background: rgba(194, 58, 42, 0.1);
+    border-color: var(--red);
+    color: var(--rust);
+  }
+
+  .btn-add {
+    width: 100%;
+    height: 44px;
+    margin-top: 12px;
+    background: transparent;
+    border: 1px dashed var(--line);
+    color: var(--ink-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-add:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+    background: rgba(212, 168, 75, 0.04);
+  }
+
+  .btn-primary {
+    width: 100%;
+    height: 52px;
+    margin-top: 24px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold-bright);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212, 168, 75, 0.1), rgba(194, 84, 42, 0.06));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .btn-primary:hover {
+    color: var(--bg);
+    background: var(--gold);
+    border-color: var(--gold-bright);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+
+  .tip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 14px;
+    padding: 8px 14px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line-soft);
+  }
+  .tip kbd {
+    display: inline-block;
+    padding: 2px 7px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+  }
+
+  .result-box {
+    margin-top: 24px;
+    padding: 32px 28px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .result-box.visible { opacity: 1; transform: translateY(0); }
+  .result-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    background: var(--panel);
+    padding: 0 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .result-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .result-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 72px;
+    font-weight: 400;
+    line-height: 1;
+    transition: color 0.3s;
+    color: var(--gold-bright);
+  }
+  .result-bar {
+    height: 3px;
+    background: var(--line-soft);
+    margin-top: 22px;
+    overflow: hidden;
+  }
+  .result-bar-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 0.6s cubic-bezier(.4,0,.2,1);
+  }
+  .result-status {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-top: 16px;
+  }
+  .result-status .pass { color: var(--green-bright); }
+  .result-status .fail { color: var(--rust); }
+  .result-status .warn { color: var(--orange); }
+
+  .divider {
+    height: 1px;
+    background: var(--line);
+    margin: 36px 0;
+  }
+
+  .needed-section { display: flex; flex-direction: column; gap: 16px; }
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-group label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-left: 2px;
+  }
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 500px) {
+    .input-row { grid-template-columns: 1fr; }
+  }
+
+  /* Toggle switch */
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle {
+    position: relative;
+    width: 44px;
+    height: 22px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    transition: all 0.25s;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    background: var(--ink-faint);
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  .toggle.on {
+    border-color: var(--gold);
+    background: rgba(212, 168, 75, 0.1);
+  }
+  .toggle.on::after {
+    transform: translateX(22px);
+    background: var(--gold-bright);
+    box-shadow: 0 0 10px rgba(240, 198, 97, 0.5);
+  }
+  .toggle-wrap:hover .toggle { border-color: var(--gold); }
+  .toggle-wrap.active { color: var(--gold-bright); }
+
+  .comp-body {
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s, margin-top 0.3s;
+    max-height: 2000px;
+    opacity: 1;
+  }
+  #compCard.collapsed .comp-body {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+  }
+  #compCard.collapsed .card-title {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom-color: transparent;
+  }
+
+  .comp-panel {
+    margin-top: 24px;
+    padding: 32px 28px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.35s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .comp-panel.visible { opacity: 1; transform: translateY(0); }
+  .comp-panel::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    background: var(--panel);
+    padding: 0 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rust);
+  }
+
+  .comp-meters {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 500px) {
+    .comp-meters { grid-template-columns: 1fr; }
+  }
+  .comp-meter {
+    text-align: center;
+    padding: 18px 12px;
+    border: 1px solid var(--line-soft);
+    background: var(--panel);
+  }
+  .comp-meter-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--ink-faint);
+  }
+  .comp-meter-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .comp-meter-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+  .comp-meter.plus .comp-meter-label { color: var(--green-bright); }
+  .comp-meter.plus .comp-meter-value { color: var(--green-bright); }
+  .comp-meter.minus .comp-meter-label { color: var(--rust); }
+  .comp-meter.minus .comp-meter-value { color: var(--rust); }
+  .comp-meter.netto .comp-meter-label { color: var(--gold); }
+  .comp-meter.netto .comp-meter-value { color: var(--gold-bright); }
+
+  .comp-breakdown {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .comp-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 80px;
+    align-items: center;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    border: 1px solid transparent;
+    gap: 12px;
+  }
+  .comp-row-note {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .comp-row-note .rounded {
+    color: var(--ink-faint);
+    font-size: 11px;
+    font-weight: 400;
+    margin-left: 4px;
+  }
+  .comp-row-detail {
+    font-size: 11px;
+    color: var(--ink-faint);
+  }
+  .comp-row-pts {
+    font-weight: 700;
+    font-size: 14px;
+    text-align: right;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+  }
+  .comp-row.is-plus {
+    background: rgba(107, 157, 74, 0.06);
+    border-color: rgba(107, 157, 74, 0.2);
+  }
+  .comp-row.is-plus .comp-row-pts { color: var(--green-bright); }
+  .comp-row.is-minus {
+    background: rgba(194, 84, 42, 0.06);
+    border-color: rgba(194, 84, 42, 0.2);
+  }
+  .comp-row.is-minus .comp-row-pts { color: var(--rust); }
+  .comp-row.is-neutral {
+    background: rgba(122, 111, 85, 0.06);
+    border-color: var(--line-soft);
+  }
+  .comp-row.is-neutral .comp-row-pts { color: var(--ink-faint); }
+
+  .comp-verdict {
+    margin-top: 20px;
+    padding: 16px 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+  .comp-verdict.pass {
+    background: rgba(107, 157, 74, 0.08);
+    border-color: rgba(107, 157, 74, 0.3);
+    color: var(--green-bright);
+  }
+  .comp-verdict.fail {
+    background: rgba(194, 58, 42, 0.08);
+    border-color: rgba(194, 58, 42, 0.3);
+    color: var(--rust);
+  }
+  .comp-verdict.neutral {
+    background: var(--panel);
+    border-color: var(--line);
+    color: var(--ink-dim);
+  }
+
+  .comp-explain {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(212, 168, 75, 0.04);
+    border-left: 2px solid var(--gold);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  footer {
+    border-top: 1px solid var(--line-soft);
+    padding: 50px 40px 30px;
+    text-align: center;
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 14px;
+    position: relative;
+    z-index: 2;
+  }
+  footer .sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--gold);
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">kinorama.dev</a>
+  <div class="nav-links">
+    <a href="index.html">Start</a>
+    <a href="notenrechner.html" class="active">Notenrechner</a>
+    <a href="kepler.html">Kepler</a>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="page-kicker">Werkzeug · I</div>
+  <h1 class="page-title">Der <em>Notenrechner</em></h1>
+  <div class="page-sub">Durchschnitt · Wunschnote · Kompensation</div>
+  <div class="ornament"></div>
+</header>
+
+<main>
+
+  <div class="card">
+    <div class="card-title">Noten eingeben</div>
+
+    <div class="grade-header">
+      <span>Note</span>
+      <span>Gewichtung</span>
+      <span></span>
+    </div>
+
+    <div class="grade-list" id="gradeList">
+      <div class="grade-row">
+        <input type="number" step="0.1" min="1" max="6" placeholder="z.B. 5.2" onkeydown="handleKey(event, this)">
+        <input type="number" step="0.1" min="0" value="1" placeholder="1" onkeydown="handleKey(event, this)">
+        <button class="btn-remove" onclick="removeRow(this)" title="Entfernen">&times;</button>
+      </div>
+    </div>
+
+    <button class="btn-add" onclick="addRow()">
+      <span style="font-size:16px; letter-spacing:0;">+</span> Zeile hinzufügen
+    </button>
+
+    <div class="tip">
+      <kbd>Enter</kbd> springt zum nächsten Feld oder fügt neue Zeile hinzu
+    </div>
+
+    <button class="btn-primary" onclick="calculateAverage()">Durchschnitt berechnen</button>
+
+    <div class="result-box" id="avgResult" data-label="Durchschnitt">
+      <div class="result-label">Gewichteter Mittelwert</div>
+      <div class="result-value" id="avgValue">&mdash;</div>
+      <div class="result-bar"><div class="result-bar-fill" id="avgBar"></div></div>
+      <div class="result-status" id="avgStatus"></div>
+    </div>
+  </div>
+
+  <div class="card" id="compCard">
+    <div class="card-title">
+      <span>Kompensation</span>
+      <label class="toggle-wrap" id="compToggleWrap">
+        <span id="compToggleLabel">Anzeigen</span>
+        <span class="toggle on" id="compToggle"></span>
+      </label>
+    </div>
+
+    <div class="comp-body" id="compBody">
+      <div class="comp-explain">
+        Noten werden auf <strong style="color: var(--gold-bright); font-weight: 500;">0,5</strong> gerundet. Für jeden Punkt <em>unter</em> der 4 brauchst du <strong style="color: var(--gold-bright); font-weight: 500;">zwei</strong> Punkte <em>über</em> der 4 (Doppelkompensation).
+      </div>
+
+      <div class="comp-panel" id="compPanel" data-label="Bilanz">
+      <div class="comp-meters">
+        <div class="comp-meter plus">
+          <div class="comp-meter-label">Plus</div>
+          <div class="comp-meter-value" id="compPlus">0</div>
+          <div class="comp-meter-sub">Punkte über 4</div>
+        </div>
+        <div class="comp-meter minus">
+          <div class="comp-meter-label">Minus</div>
+          <div class="comp-meter-value" id="compMinus">0</div>
+          <div class="comp-meter-sub" id="compMinusSub">&times;2 gewichtet</div>
+        </div>
+        <div class="comp-meter netto">
+          <div class="comp-meter-label">Netto</div>
+          <div class="comp-meter-value" id="compNetto">0</div>
+          <div class="comp-meter-sub">Saldo</div>
+        </div>
+      </div>
+      <div class="comp-breakdown" id="compBreakdown"></div>
+      <div class="comp-verdict" id="compVerdict"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Benötigte Note</div>
+
+    <div class="needed-section">
+      <div class="input-row">
+        <div class="input-group">
+          <label>Gewünschter Durchschnitt</label>
+          <input type="number" step="0.1" min="1" max="6" id="desiredAverage" placeholder="z.B. 4.5">
+        </div>
+        <div class="input-group">
+          <label>Gewichtung nächste Note</label>
+          <input type="number" step="0.1" min="0" id="nextWeight" value="1" placeholder="1">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="calculateNeededGrade()">Benötigte Note berechnen</button>
+    </div>
+
+    <div class="result-box" id="neededResult" data-label="Benötigt">
+      <div class="result-label">Damit dein Ziel hält</div>
+      <div class="result-value" id="neededValue">&mdash;</div>
+      <div class="result-bar"><div class="result-bar-fill" id="neededBar"></div></div>
+      <div class="result-status" id="neededStatus"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="sig">Nosce te ipsum</div>
+  kinorama.dev &middot; Notenrechner
+</footer>
+
+<script>
+  // --- Nav scroll state ---
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  });
+
+  // --- Compensation menu toggle (show/hide whole compensation section) ---
+  let compVisible = true;
+  const compToggle = document.getElementById('compToggle');
+  const compToggleWrap = document.getElementById('compToggleWrap');
+  const compBody = document.getElementById('compBody');
+  const compCard = document.getElementById('compCard');
+  compToggleWrap.classList.add('active');
+
+  compToggleWrap.addEventListener('click', () => {
+    compVisible = !compVisible;
+    compToggle.classList.toggle('on', compVisible);
+    compToggleWrap.classList.toggle('active', compVisible);
+    compCard.classList.toggle('collapsed', !compVisible);
+    if (compVisible) {
+      const { count } = getGrades();
+      if (count > 0) calculateCompensation();
+    }
+  });
+
+  // --- Row management ---
+  function addRow() {
+    const list = document.getElementById('gradeList');
+    const row = document.createElement('div');
+    row.className = 'grade-row';
+    row.innerHTML = `
+      <input type="number" step="0.1" min="1" max="6" placeholder="z.B. 5.2" onkeydown="handleKey(event, this)">
+      <input type="number" step="0.1" min="0" value="1" placeholder="1" onkeydown="handleKey(event, this)">
+      <button class="btn-remove" onclick="removeRow(this)" title="Entfernen">&times;</button>
+    `;
+    list.appendChild(row);
+    row.querySelector('input').focus();
+  }
+
+  function removeRow(btn) {
+    const row = btn.parentElement;
+    const list = document.getElementById('gradeList');
+    if (list.children.length <= 1) return;
+    row.classList.add('removing');
+    setTimeout(() => {
+      row.remove();
+      const { count } = getGrades();
+      if (count > 0) calculateAverage();
+    }, 200);
+  }
+
+  function getGrades() {
+    const rows = document.querySelectorAll('#gradeList .grade-row');
+    let totalWeight = 0, weightedSum = 0, count = 0;
+    const list = [];
+    rows.forEach((row, i) => {
+      const inputs = row.querySelectorAll('input');
+      const note = parseFloat(inputs[0].value);
+      const weight = parseFloat(inputs[1].value);
+      if (!isNaN(note) && !isNaN(weight) && weight > 0) {
+        weightedSum += note * weight;
+        totalWeight += weight;
+        count++;
+        list.push({ note, weight, index: i + 1 });
+      }
+    });
+    return { weightedSum, totalWeight, count, list };
+  }
+
+  // --- Color & status helpers ---
+  function gradeColor(grade) {
+    if (grade >= 5.5) return '#8dc562';
+    if (grade >= 4.5) return '#a3c26b';
+    if (grade >= 4.0) return '#d98a2b';
+    return '#c2542a';
+  }
+
+  function gradeStatusShort(grade) {
+    if (grade >= 5.5) return '<span class="pass">Sehr gut</span>';
+    if (grade >= 4.5) return '<span class="pass">Gut</span>';
+    if (grade >= 4.0) return '<span class="warn">Genügend</span>';
+    return '<span class="fail">Ungenügend</span>';
+  }
+
+  function showResult(boxId, valueId, barId, statusId, grade, statusHtml) {
+    const box = document.getElementById(boxId);
+    const val = document.getElementById(valueId);
+    const bar = document.getElementById(barId);
+    const status = document.getElementById(statusId);
+    const color = gradeColor(grade);
+    const pct = Math.min(Math.max((grade / 6) * 100, 0), 100);
+    val.textContent = grade.toFixed(2);
+    val.style.color = color;
+    bar.style.width = pct + '%';
+    bar.style.background = `linear-gradient(90deg, ${color}55, ${color})`;
+    status.innerHTML = statusHtml;
+    box.classList.add('visible');
+  }
+
+  function calculateAverage() {
+    const { weightedSum, totalWeight, count } = getGrades();
+    if (count === 0) return;
+    const avg = weightedSum / totalWeight;
+    showResult('avgResult', 'avgValue', 'avgBar', 'avgStatus', avg,
+      `${count} Note${count !== 1 ? 'n' : ''} &middot; ${gradeStatusShort(avg)}`
+    );
+    calculateCompensation();
+  }
+
+  // --- Compensation ---
+  // Round to nearest 0.5
+  function roundHalf(x) {
+    return Math.round(x * 2) / 2;
+  }
+
+  // Format numbers cleanly: drop trailing .0
+  function fmt(n) {
+    const v = Math.abs(n);
+    return (v % 1 === 0) ? v.toFixed(0) : v.toFixed(1);
+  }
+
+  function calculateCompensation() {
+    if (!compVisible) return;
+    const { list } = getGrades();
+    if (list.length === 0) return;
+
+    let totalPlus = 0, totalMinus = 0;
+    const breakdown = [];
+    const penaltyFactor = 2;
+
+    list.forEach(g => {
+      const rounded = roundHalf(g.note);
+      const diff = rounded - 4.0; // positive when above 4, negative when below
+      if (diff > 0) {
+        const pts = diff * g.weight;
+        totalPlus += pts;
+        breakdown.push({
+          note: g.note,
+          rounded,
+          weight: g.weight,
+          diff,
+          pts,
+          type: 'plus'
+        });
+      } else if (diff < 0) {
+        const base = Math.abs(diff) * g.weight;
+        const pts = base * penaltyFactor;
+        totalMinus += pts;
+        breakdown.push({
+          note: g.note,
+          rounded,
+          weight: g.weight,
+          diff,
+          pts,
+          base,
+          type: 'minus'
+        });
+      } else {
+        breakdown.push({
+          note: g.note,
+          rounded,
+          weight: g.weight,
+          diff: 0,
+          pts: 0,
+          type: 'neutral'
+        });
+      }
+    });
+
+    const netto = totalPlus - totalMinus;
+
+    document.getElementById('compPlus').textContent = '+' + fmt(totalPlus);
+    document.getElementById('compMinus').textContent = '\u2212' + fmt(totalMinus);
+    const nettoEl = document.getElementById('compNetto');
+    const nettoSign = netto > 0 ? '+' : (netto < 0 ? '\u2212' : '\u00b10');
+    nettoEl.textContent = netto === 0 ? '\u00b10' : (nettoSign + fmt(netto));
+    if (netto > 0) {
+      nettoEl.style.color = 'var(--green-bright)';
+    } else if (netto < 0) {
+      nettoEl.style.color = 'var(--rust)';
+    } else {
+      nettoEl.style.color = 'var(--gold-bright)';
+    }
+
+    // Breakdown
+    const bdEl = document.getElementById('compBreakdown');
+    bdEl.innerHTML = breakdown.map(b => {
+      let cls, detail, label, roundedNote;
+      roundedNote = (b.rounded !== b.note)
+        ? `<span class="rounded">&rarr; ${b.rounded.toFixed(1)}</span>`
+        : '';
+      if (b.type === 'plus') {
+        cls = 'is-plus';
+        detail = `Diff +${fmt(b.diff)} &middot; Gewicht ${fmt(b.weight)}`;
+        label = '+' + fmt(b.pts);
+      } else if (b.type === 'minus') {
+        cls = 'is-minus';
+        detail = `Diff &minus;${fmt(Math.abs(b.diff))} &middot; Gewicht ${fmt(b.weight)} &middot; &times;2`;
+        label = '\u2212' + fmt(b.pts);
+      } else {
+        cls = 'is-neutral';
+        detail = 'genau 4.0';
+        label = '\u00b10';
+      }
+      return `<div class="comp-row ${cls}">
+        <span class="comp-row-note">${b.note.toFixed(1)}${roundedNote}</span>
+        <span class="comp-row-detail">${detail}</span>
+        <span class="comp-row-pts">${label}</span>
+      </div>`;
+    }).join('');
+
+    // Verdict
+    const verdict = document.getElementById('compVerdict');
+    const pts = fmt(Math.abs(netto));
+    const word = pts !== '1' ? 'Punkte' : 'Punkt';
+    if (netto > 0) {
+      verdict.className = 'comp-verdict pass';
+      verdict.innerHTML = `Kompensiert &middot; +${pts} ${word} Überschuss`;
+    } else if (netto === 0) {
+      verdict.className = 'comp-verdict neutral';
+      verdict.innerHTML = 'Genau ausgeglichen';
+    } else {
+      verdict.className = 'comp-verdict fail';
+      verdict.innerHTML = `Nicht kompensiert &middot; &minus;${pts} ${word} fehlen`;
+    }
+    document.getElementById('compPanel').classList.add('visible');
+  }
+
+  // --- Needed grade ---
+  function calculateNeededGrade() {
+    const desiredAvg = parseFloat(document.getElementById('desiredAverage').value);
+    const nextWeight = parseFloat(document.getElementById('nextWeight').value);
+    if (isNaN(desiredAvg) || isNaN(nextWeight) || nextWeight <= 0) return;
+    const { weightedSum, totalWeight } = getGrades();
+    const needed = ((desiredAvg * (totalWeight + nextWeight)) - weightedSum) / nextWeight;
+    let statusHtml;
+    if (needed > 6) {
+      statusHtml = '<span class="fail">Nicht erreichbar &middot; über 6.0</span>';
+    } else if (needed < 1) {
+      statusHtml = '<span class="pass">Bereits erreicht</span>';
+    } else {
+      statusHtml = `Ziel &Oslash; ${desiredAvg.toFixed(1)} &middot; ${gradeStatusShort(needed)}`;
+    }
+    const display = Math.min(Math.max(needed, 1), 6);
+    showResult('neededResult', 'neededValue', 'neededBar', 'neededStatus', display, statusHtml);
+    if (needed > 6) {
+      document.getElementById('neededValue').textContent = needed.toFixed(2);
+      document.getElementById('neededValue').style.color = 'var(--rust)';
+    }
+  }
+
+  function handleKey(e, input) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const allInputs = Array.from(document.querySelectorAll('#gradeList input[type="number"]'));
+      const idx = allInputs.indexOf(input);
+      if (idx === allInputs.length - 1) {
+        addRow();
+        setTimeout(() => {
+          const updated = document.querySelectorAll('#gradeList input[type="number"]');
+          updated[updated.length - 2]?.focus();
+        }, 50);
+      } else {
+        allInputs[idx + 1]?.focus();
+      }
+    }
+  }
+
+  document.addEventListener('input', (e) => {
+    if (e.target.closest('#gradeList')) {
+      const { count } = getGrades();
+      if (count > 0) calculateAverage();
+    }
+  });
+</script>
+
+</body>
+</html>
